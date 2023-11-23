@@ -1,0 +1,122 @@
+.ArtistCard_wrapper {
+  display: flex;
+  flex-direction: column;
+  margin: 5rem;
+}
+
+.ArtistCard_list {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  width: 100%;
+  gap: 2rem;
+}
+
+.ArtistCard_title {
+  font-weight: 700;
+  font-size: 18px;
+  border-bottom: 2px solid;
+  margin: 2rem 0 2rem 0;
+}
+
+.ArtistCard_box {
+  padding-bottom: 1ArtistCard_1rem;
+  background-color: var(--shadow-light-color);
+  padding: 1rem;
+  color: var(--icons-color);
+  border-radius: 6px;
+  box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+}
+
+.ArtistCard_box:hover {
+  border-radius: 9px;
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+  /* border: 1px solid #ff8700; */
+}
+
+.ArtistCard_box:hover > .ArtistCard_box_img {
+  transform: scale(1.05);
+}
+
+.ArtistCard_box_img {
+  width: 100% !important;
+  height: 6rem !important;
+  margin-bottom: 1rem;
+  border-radius: 9px;
+  object-fit: cover;
+}
+
+.ArtistCard_box_avatar {
+  width: 35px !important;
+  height: 35px !important;
+  border-radius: 50rem;
+}
+
+.ArtistCard_box_infor {
+  font-size: 12px;
+}
+
+.ArtistCard_bug {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+}
+
+.ArtistCard_box_infor_name {
+  font-weight: 600;
+}
+
+@media (min-width: 426px) and (max-width: 768px) {
+  .ArtistCard_wrapper {
+    margin: 5rem 3rem;
+  }
+  .ArtistCard_list {
+    grid-template-columns: repeat(3, 1fr);
+    width: 100%;
+    font-size: 10px;
+  }
+
+  .ArtistCard_box_img {
+    height: 5rem !important;
+  }
+
+  .ArtistCard_box_avatar {
+    width: 31px !important;
+    height: 31px !important;
+  }
+
+  .ArtistCard_box_infor {
+    font-size: 10px;
+  }
+
+  .ArtistCard_box {
+    padding: 0ArtistCard_7rem;
+  }
+}
+
+@media (max-width: 425artistcard_9px) {
+  .ArtistCard_wrapper {
+    margin: 5rem 2rem;
+  }
+  .ArtistCard_list {
+    grid-template-columns: repeat(2, 1fr);
+    width: 100%;
+    font-size: 10px;
+  }
+
+  .ArtistCard_box_img {
+    height: 4rem !important;
+  }
+
+  .ArtistCard_box_avatar {
+    width: 27px !important;
+    height: 27px !important;
+  }
+
+  .ArtistCard_box_infor {
+    font-size: 8px;
+  }
+
+  .ArtistCard_box {
+    padding: 0ArtistCard_4rem;
+  }
+}

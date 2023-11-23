@@ -1,0 +1,16 @@
+{
+	"folders": [
+		{
+			"path": "../.."
+		},
+		{
+			"path": "../../../../../Code/TB/artifacts"
+		},
+		{
+			"path": "../../../../../Code/TB/cache"
+		}
+	],
+	"settings": {
+		"reactSnippets.settings.prettierEnabled": true
+	}
+}

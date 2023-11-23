@@ -1,0 +1,255 @@
+.wrapper {
+  display: flex;
+  flex-direction: row;
+  margin: 5rem;
+}
+
+.nft_img {
+  width: 44% !important;
+  height: 30rem !important;
+  margin-right: 5rem;
+  border-radius: 8px;
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+  object-fit: cover;
+}
+
+.info_owner_avatar {
+  width: 45px;
+  height: 45px;
+  border-radius: 40rem;
+  object-fit: cover;
+}
+
+.nft_info {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.nft_info_name {
+  font-weight: 600;
+  font-size: 2rem;
+  margin-top: -0.3rem;
+}
+.nft_info_name_mobile {
+  font-weight: 600;
+  font-size: 1.5rem;
+  margin-top: 1rem;
+  display: none;
+}
+
+.info_owner_wrapper {
+  display: flex;
+  flex-direction: row;
+  padding: 1rem;
+  border: 1px solid var(--icons-color);
+  border-radius: 6px;
+}
+
+.info_owner_box {
+  display: flex;
+  flex-direction: row;
+}
+
+.info_owner_box:first-child {
+  padding-right: 3rem;
+  border-right: 1px solid var(--icons-color);
+}
+.info_owner_box:last-child {
+  padding-left: 3rem;
+}
+
+.info_owner_avatar {
+  margin-right: 1rem;
+}
+
+.nft_items_wrapper {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.nft_item_box {
+  display: flex;
+  flex-direction: row;
+}
+
+.nft_item_icon {
+  width: 15px;
+  height: 15px;
+  margin-top: 3px;
+  margin-right: 0.3rem;
+}
+
+.nft_price_wrapper {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 100%;
+  padding: 1rem;
+  border: 1px solid var(--icons-color);
+  border-radius: 6px;
+}
+
+.nft_price_currentPrice {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-right: 3rem;
+  border-right: 1px solid var(--icons-color);
+}
+
+.unit_icon {
+  margin-top: 3px;
+}
+
+.nft_price_changePrice {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+}
+
+.AuctionForm {
+  padding: 1rem;
+  border: 1px solid var(--icons-color);
+  border-radius: 8px;
+}
+
+.nft_btn_box {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+.Form_box_input {
+  margin-top: 1rem;
+}
+
+.Form_box_input label {
+  width: 100%;
+  margin-left: 1rem;
+  font-weight: 700;
+  font-size: 1.3rem;
+}
+
+.Form_box_input_userName {
+  width: 100%;
+  border: 1px solid var(--icons-color);
+  padding: 1rem;
+  border-radius: 1rem;
+  background-color: transparent;
+  margin-top: 0.5rem;
+  margin-bottom: 1rem;
+  outline: none;
+  color: var(--icons-color);
+}
+
+@media (min-width: 426px) and (max-width: 768px) {
+  .wrapper {
+    margin: 5rem 5rem;
+    flex-direction: column;
+  }
+  .wrapper > * {
+    margin-top: 2rem;
+  }
+  .nft_info_name {
+    display: none;
+  }
+
+  .nft_info_name_mobile {
+    display: block;
+  }
+
+  .nft_img {
+    width: 100% !important;
+    height: 36rem !important;
+  }
+
+  .info_owner_wrapper {
+    justify-content: center;
+  }
+
+  .info_owner_box {
+    flex-direction: row;
+  }
+
+  .info_owner_box:first-child {
+    padding-right: 9%;
+    border-right: 1px solid var(--icons-color);
+  }
+  .info_owner_box:last-child {
+    padding-left: 9%;
+  }
+
+  .nft_info > * {
+    margin-bottom: 1.5rem;
+  }
+
+  .nft_price_currentPrice {
+    padding-right: 25%;
+  }
+  .nft_price_changePrice {
+    padding-left: 9%;
+  }
+  .nft_price_wrapper {
+    justify-content: center;
+  }
+  .nft_btn_box {
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 425.9px) {
+  .wrapper {
+    margin: 5rem 1.5rem;
+    flex-direction: column;
+  }
+  .wrapper > * {
+    margin-top: 2rem;
+  }
+  .nft_info_name {
+    display: none;
+  }
+
+  .nft_info_name_mobile {
+    display: block;
+  }
+
+  .nft_img {
+    width: 100% !important;
+    height: 33rem !important;
+  }
+
+  .info_owner_wrapper {
+    justify-content: center;
+  }
+
+  .info_owner_box {
+    display: flex;
+    flex-direction: row;
+  }
+
+  .info_owner_box:first-child {
+    padding-right: 7%;
+    border-right: 1px solid var(--icons-color);
+  }
+  .info_owner_box:last-child {
+    padding-left: 7%;
+  }
+
+  .nft_info > * {
+    margin-bottom: 1.5rem;
+  }
+
+  .nft_price_currentPrice {
+    padding-right: 25%;
+  }
+  .nft_price_changePrice {
+    padding-left: 5%;
+  }
+  .nft_price_wrapper {
+    justify-content: center;
+  }
+  .nft_btn_box {
+    flex-direction: column;
+  }
+}

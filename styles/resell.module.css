@@ -1,0 +1,32 @@
+.wrapper {
+  background-color: rgb(250, 249, 246);
+  color: var(--icons-color);
+}
+
+.resell_title {
+  text-align: center;
+  font-weight: 700;
+  font-size: 30px;
+  margin: 6rem 0;
+}
+
+.Form_wrapper {
+  margin: 5rem 30rem;
+}
+
+.nft_img {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover;
+  border-radius: 9px;
+  margin: 2rem 0;
+}
+
+.subInfo {
+  margin: 5rem 0;
+  border-top: 2px solid var(--icons-color);
+}
+
+.subInfo_chart {
+  margin: 5rem 0;
+}

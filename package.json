@@ -1,0 +1,39 @@
+{
+  "name": "nftmarket_frontend",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build && next export",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@mui/material": "^5.14.11",
+    "@next/font": "13.4.19",
+    "@openzeppelin/contracts": "^4.9.3",
+    "@tanstack/react-query-devtools": "^4.33.0",
+    "@thirdweb-dev/react": "^3.14.35",
+    "@tippyjs/react": "^4.2.6",
+    "apexcharts": "^3.42.0",
+    "axios": "^1.5.0",
+    "classnames": "^2.3.2",
+    "ethers": "^5.7.2",
+    "ipfs-http-client": "^60.0.1",
+    "next": "13.4.19",
+    "react": "18.2.0",
+    "react-apexcharts": "^1.4.1",
+    "react-countdown": "^2.3.5",
+    "react-dom": "18.2.0",
+    "react-dropzone": "^14.2.3",
+    "react-icons": "^4.10.1",
+    "react-query": "^3.39.3",
+    "react-tippy": "^1.2.6",
+    "web3modal": "^1.9.12",
+    "web3uikit": "^1.0.4"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^2.0.0",
+    "hardhat": "^2.11.2"
+  }
+}

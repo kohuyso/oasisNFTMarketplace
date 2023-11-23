@@ -1,0 +1,97 @@
+.wrapper {
+  padding: 3rem;
+  color: var(--icons-color);
+}
+.top {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding-bottom: 1rem;
+  border-bottom: 3px solid var(--icons-color);
+  margin-bottom: 5rem;
+}
+.closeIcon {
+  width: 5rem;
+  height: 5rem;
+  margin-right: 3rem;
+  padding-top: 1rem;
+}
+.logo {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  height: 3rem;
+  padding-top: 3rem;
+  margin-bottom: 5rem;
+}
+.logo_img {
+  width: 5rem;
+  height: 5rem;
+  margin: 0 1rem;
+  margin-top: 0.5rem;
+  background-color: white;
+  border-radius: 50rem;
+}
+
+.smallAvatar {
+  width: 4rem;
+  height: 4rem;
+  border-radius: 50rem;
+  margin-top: 1rem;
+}
+
+.nav_items {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 5rem;
+}
+.item {
+  padding: 1.5rem;
+  border-top: 1px solid var(--icons-color);
+  border-bottom: 1px solid var(--icons-color);
+  width: 100%;
+  align-items: start;
+  text-align: start;
+}
+
+.buttonWallet1 {
+  width: 100% !important;
+  justify-content: space-evenly !important;
+  color: white !important;
+  background-color: #ff8700 !important;
+  border-radius: 7rem !important;
+  padding: 5px !important;
+  font-size: 12px !important;
+}
+.buttonWallet1:hover {
+  color: #fff !important;
+  background-color: #d17b1b !important;
+}
+@media (max-width: 425.9px) {
+  .wrapper {
+    padding: 1.5rem;
+  }
+  .closeIcon {
+    margin-right: 0rem;
+    padding-top: 1rem;
+  }
+  .logo_img {
+    width: 5rem;
+    height: 5rem;
+    margin: 0;
+    margin-left: -0.9rem;
+  }
+  .smallAvatar {
+    width: 3.6rem;
+    height: 3.6rem;
+  }
+  .logo {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: start;
+    height: 3rem;
+    padding-top: 3rem;
+    margin-bottom: 5rem;
+  }
+}

@@ -1,0 +1,144 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  margin: 5rem;
+}
+
+.CategoryCard_list {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  width: 100%;
+}
+
+.title {
+  font-weight: 700;
+  font-size: 18px;
+  border-bottom: 2px solid;
+  margin: 5rem 0;
+}
+
+.CategoryCard_box {
+  display: flex;
+  flex-direction: column;
+  width: 27.2vw;
+  height: 81%;
+  padding-bottom: 2rem;
+  margin-right: 1rem;
+  margin-top: -2rem;
+}
+
+.CategoryCard_box:hover {
+  border-radius: 6px;
+  border: 1px solid #ff8700;
+}
+
+.CategoryCard_box_big {
+  width: 100% !important;
+  height: 60% !important;
+  margin-bottom: 0.5rem;
+  border-top-left-radius: 6px;
+  border-top-right-radius: 6px;
+  object-fit: cover;
+}
+
+.CategoryCard_box_small {
+  height: 30%;
+}
+
+.box_small_img {
+  width: 32% !important;
+  height: 95% !important;
+  border-bottom-left-radius: 6px;
+  border-bottom-right-radius: 6px;
+  object-fit: cover;
+}
+.box_small_img:not(:last-child) {
+  margin-right: 2%;
+}
+
+.CategoryCard_box_info {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin-top: 1rem;
+  font-weight: 600;
+  height: 10%;
+  padding: 0 2rem;
+  font-size: 0.8rem;
+}
+
+.info_number {
+  border-radius: 2px;
+  border: 2px solid #ff8700;
+  padding: 0.2rem 1rem;
+}
+
+.info_name {
+  margin-top: 0.3rem;
+}
+
+@media (min-width: 426px) and (max-width: 768px) {
+  .wrapper {
+    margin: 5rem 3rem;
+  }
+  .CategoryCard_list {
+    grid-template-columns: repeat(2, 1fr);
+    width: 100%;
+    font-size: 10px;
+  }
+
+  .CategoryCard_box {
+    width: 35vw;
+    padding-bottom: 0.6rem;
+    font-size: 8px;
+    margin: 0 auto;
+  }
+
+  .nft_info_name {
+    margin: 0.4rem 0;
+    font-size: 12px;
+  }
+
+  .nft_author_avatar {
+    width: 35px;
+    height: 35px;
+    margin-right: 0.7rem;
+  }
+
+  .info_number {
+    width: auto;
+  }
+
+  .CategoryCard_box_info {
+    padding: 0;
+  }
+}
+
+@media (max-width: 425.9px) {
+  .wrapper {
+    margin: 5rem 2rem;
+  }
+  .CategoryCard_list {
+    grid-template-columns: repeat(1, 1fr);
+    width: 100%;
+    font-size: 10px;
+  }
+
+  .CategoryCard_box {
+    width: 81vw;
+    padding: 0.5rem;
+    padding-bottom: 0.8rem;
+    font-size: 6px;
+  }
+
+  .nft_info_name {
+    margin: 0.1rem 0;
+    font-size: 8px;
+  }
+
+  .nft_author_avatar {
+    width: 27px;
+    height: 27px;
+    margin-right: 0.5rem;
+  }
+}

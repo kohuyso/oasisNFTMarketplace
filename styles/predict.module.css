@@ -1,0 +1,31 @@
+.predict {
+  width: 100%;
+  margin-block: 6rem;
+  color: var(--icons-color);
+  margin: 7rem 0rem 9rem 0rem;
+}
+.predict_info {
+  width: 80%;
+  margin: 0rem auto;
+  border-bottom: 3px solid var(--shadow-dark-color);
+  color: var(--icons-color);
+}
+.chart {
+  width: 80%;
+  margin: 3rem auto;
+}
+
+.predict_box {
+  width: 50%;
+  margin: 5rem auto;
+  border: 2px solid var(--icons-color);
+  padding: 1rem;
+  border-radius: 1rem;
+  text-align: center;
+}
+
+.alert {
+  width: 80%;
+  margin: -2rem auto;
+  text-align: center;
+}

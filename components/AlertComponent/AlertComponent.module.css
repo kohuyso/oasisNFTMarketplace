@@ -1,0 +1,48 @@
+.wrapper {
+  padding: 2rem;
+  background-color: rgb(255, 255, 255);
+  width: 50vw;
+  position: fixed;
+  left: 25vw;
+  color: rgb(154, 154, 154);
+  top: 20vw;
+  font-size: 30px;
+  border-radius: 9px;
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+}
+
+.icon {
+  width: 5rem;
+  height: 5rem;
+  margin-bottom: 1rem;
+  color: rgb(247, 109, 109);
+}
+.oops {
+  margin-bottom: 1rem;
+  color: rgb(136, 136, 136);
+}
+
+.iconClose {
+  position: absolute;
+  right: 15px;
+  top: 15px;
+  color: rgb(247, 109, 109);
+}
+
+.info {
+  text-align: center;
+}
+
+.icon2 {
+  width: 5rem;
+  height: 5rem;
+  margin-bottom: 1rem;
+  color: rgb(40, 190, 92);
+}
+
+.iconClose2 {
+  position: absolute;
+  right: 15px;
+  top: 15px;
+  color: rgb(40, 190, 92);
+}

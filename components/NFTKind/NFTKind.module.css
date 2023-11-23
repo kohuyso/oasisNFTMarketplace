@@ -1,0 +1,91 @@
+.Kind {
+  width: 100%;
+  margin: 8rem 0 -3rem 0;
+}
+
+.Kind_box {
+  width: 80%;
+  margin: 0 5rem;
+  display: flex;
+  justify-content: space-between;
+}
+
+.Kind_box_left_btn {
+  display: flex;
+  gap: 2rem;
+  align-items: start;
+}
+
+.Kind_box_left_btn button {
+  border: 1px solid var(--icons-color);
+  outline: 0;
+  background-color: var(--main-bg-color);
+  font-size: 1.2rem;
+  border-radius: 2rem;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease-in;
+  color: var(--icons-color);
+}
+
+.Kind_box_left_btn .active {
+  border: 1px solid var(--icons-color);
+  background-color: var(--icons-color);
+  color: var(--main-bg-color);
+}
+
+.Kind_box_left_btn button:hover {
+  border: 1px solid var(--icons-color);
+  background-color: var(--icons-color);
+  color: var(--main-bg-color);
+}
+
+.list {
+  width: 100%;
+  padding-bottom: 5rem;
+  margin-bottom: 3rem;
+  color: var(--icons-color);
+}
+
+@media (max-width: 425.9px) {
+  .Kind {
+    margin: 3rem 0 -3rem 0;
+  }
+
+  .Kind_box {
+    width: 90%;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .Kind_box_left_btn {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    box-shadow: var(--box-shadow);
+    padding: 0.5rem;
+    border-radius: 1rem;
+    padding: 2rem 1rem;
+  }
+}
+
+@media (min-width: 426px) and (max-width: 768px) {
+  .Kind_box {
+    width: 90%;
+    display: grid;
+    margin: 0 3rem;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .Kind_box_left_btn {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    box-shadow: var(--box-shadow);
+    padding: 0.5rem;
+    border-radius: 1rem;
+    padding: 2rem 1rem;
+  }
+}

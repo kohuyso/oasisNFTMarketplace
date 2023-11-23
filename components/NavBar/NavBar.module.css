@@ -1,0 +1,389 @@
+.nav_bar_mobile {
+  position: fixed;
+  top: 0;
+  width: 100vw;
+  background-color: var(--main-bg-color);
+  box-shadow: var(--box-shadow);
+  height: 100vh;
+  overflow-y: auto;
+  z-index: 11111;
+  display: none;
+  transition: all 1s ease-out;
+}
+
+.navbar {
+  align-items: center;
+  background-color: rgba(8, 4, 4, 0.6);
+  backdrop-filter: blur(10px);
+  color: #929292;
+  font-size: 0.7rem;
+  height: 4rem;
+  transition: all 1s ease-out;
+  width: 100%;
+  z-index: 100;
+  display: flex;
+  justify-content: space-around;
+  font-family: "Proto Mono", Helvetica, Arial, sans-serif;
+  margin: 0 5rem;
+}
+
+.logo {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  height: 3rem;
+}
+
+.logoImage {
+  background-color: white;
+  margin-top: 0.5rem;
+  border-radius: 5rem;
+}
+
+.nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  height: 3rem;
+  padding-left: 3rem;
+}
+
+.nav_items {
+  display: flex;
+  justify-content: end;
+  width: 60%;
+  cursor: pointer;
+  align-items: center;
+  justify-content: space-between;
+}
+/* .nav_items > * {
+  margin-left: 1rem;
+} */
+.nav_items > p:hover {
+  color: #ffffff;
+}
+.link:hover {
+  color: #ffffff;
+}
+.tippyChild {
+  display: flex;
+  flex-direction: column;
+}
+
+.searchSection {
+  display: flex;
+  color: #929292;
+  font-size: 1rem;
+  width: 35%;
+  height: 2.25rem;
+  align-items: center;
+  padding: 0.2rem;
+  border: 1px solid #9292928b;
+  border-radius: 0.2rem;
+  cursor: pointer;
+}
+
+.searchSection > div {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  width: 20rem;
+  height: 2.25rem;
+}
+
+.inputField {
+  display: flex;
+  width: 90%;
+  color: rgb(217, 217, 217);
+  background: none;
+  font-size: 0.8rem;
+  padding-left: 0.2rem;
+  cursor: pointer;
+  border: none;
+  outline: none;
+  font-family: "Proto Mono", Helvetica, Arial, sans-serif;
+}
+
+.loggedIn_section {
+  color: #ff8700;
+  font-size: 0.5rem;
+  text-shadow: currentcolor 0px 0px 16px;
+}
+
+.main {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  min-height: 100vh;
+  background: linear-gradient(
+      0deg,
+      rgba(0, 0, 0, 0.884),
+      rgba(255, 255, 255, 0)
+    ),
+    url("../../images/blurBackground.png");
+  background-size: cover;
+  font-family: "Proto Mono", Helvetica, Arial, sans-serif;
+  margin: 0 5rem;
+  position: relative;
+}
+
+.barsIcon {
+  width: 30px;
+  height: 30px;
+  color: var(--icons-color);
+  margin-right: 1rem;
+  display: none;
+}
+
+.nav_bar_mobile {
+  display: none;
+}
+
+.connect_btn {
+  color: #000000;
+  background-color: #ff8700;
+  width: 10rem;
+  height: 2.5rem;
+  font-size: 0.85rem;
+  border: none;
+  border-radius: 0.2rem;
+  outline: none;
+  font-family: "Proto Mono", Helvetica, Arial, sans-serif;
+}
+/* .customWallet {
+  min-width: 70px !important;
+  width: 0px !important;
+  font-size: 12px !important;
+} */
+
+.smallAvatar {
+  width: 2.7rem;
+  height: 2.7rem;
+  border-radius: 50rem;
+}
+
+.buttonWallet1 {
+  color: white !important;
+  background-color: #ff8700 !important;
+  border-radius: 7rem !important;
+  padding: 5px !important;
+  font-size: 12px !important;
+}
+.buttonWallet1:hover {
+  color: #fff !important;
+  background-color: #d17b1b !important;
+}
+.button,
+.buttonWallet {
+  display: inline-block;
+  border-radius: 10rem;
+  color: #fff;
+  text-transform: uppercase;
+  font-size: 0.6rem;
+  letter-spacing: 0.15rem;
+  transition: all 0.3s;
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+  color: white !important;
+  background-color: #ff8700 !important;
+  padding: 0.8rem;
+  width: 100%;
+}
+.button:after,
+.buttonWallet ::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #0cf;
+  border-radius: 10rem;
+  z-index: -2;
+}
+.button:before,
+.buttonWallet::before {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0%;
+  height: 100%;
+  background-color: #d17b1b;
+  transition: all 0.3s;
+  border-radius: 10rem;
+  z-index: -1;
+}
+.button:hover,
+.buttonWallet:hover {
+  color: #fff !important;
+  background-color: #d17b1b !important;
+}
+.button:hover:before,
+.buttonWallet:hover::before {
+  width: 100%;
+  color: #fff !important;
+  background-color: #d17b1b !important;
+}
+.button:hover:after,
+.buttonWallet:hover::after {
+  width: 100%;
+  color: #fff !important;
+  background-color: #d17b1b !important;
+}
+
+.tp1 {
+  background-color: red;
+}
+
+.heroSection {
+  margin-top: 30rem;
+  position: absolute;
+  left: 0;
+  top: 0rem;
+  right: 0;
+  bottom: 0;
+}
+.carousel {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 1.5rem;
+}
+.carousel_section {
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 0.3rem;
+  width: 18rem;
+  height: 9rem;
+  margin: 0 0.5rem;
+  cursor: pointer;
+  transition: all 450ms ease 0s;
+  overflow: hidden;
+  box-shadow: rgb(0 0 0 / 20%) 0px 10px 30px;
+  position: relative;
+  font-weight: 600;
+  font-size: 18px;
+}
+
+.carousel_section:hover {
+  margin-top: -0.5rem;
+  transform: scale(1.05);
+}
+.carousel_img {
+  width: 100%;
+  height: 100%;
+  transition: all 0.2s ease-in-out 0s;
+}
+.carousel_profile {
+  display: flex;
+  position: absolute;
+  top: 0;
+  margin-top: 0.5rem;
+  margin-left: 0.5rem;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 1.8rem;
+}
+
+@media (min-width: 426px) and (max-width: 768px) {
+  .logo {
+    font-size: 14px;
+    margin-left: 0.5rem;
+  }
+  .barsIcon {
+    display: block;
+  }
+  .nav {
+    padding-left: 1rem;
+    justify-content: center;
+    width: 63vw;
+  }
+
+  .nav_items {
+    display: none;
+  }
+
+  .buttonWallet {
+    font-size: 0.5rem !important;
+    width: 45% !important;
+    padding: 0 !important;
+    height: 2rem !important;
+    text-align: center !important;
+    min-width: none !important;
+  }
+  .buttonWallet:after {
+    background-color: #ff8700;
+  }
+
+  .searchSection {
+    width: 60%;
+  }
+
+  .inputField {
+    font-size: 0.7rem;
+  }
+  .main {
+    margin: 0 2rem;
+    min-height: 50vh;
+  }
+
+  .heroSection {
+    display: none;
+  }
+  .nav_bar_mobile {
+    display: block;
+  }
+}
+
+@media (max-width: 425.9px) {
+  .barsIcon {
+    display: block;
+  }
+  .logo {
+    font-size: 12px;
+    margin-left: 0.3rem;
+  }
+  .nav {
+    width: 36vw;
+    justify-content: center;
+    padding-left: 1rem;
+  }
+  .navbar {
+    display: flex;
+    justify-content: space-evenly;
+  }
+  .nav_items {
+    display: none;
+  }
+
+  .smallAvatar {
+    width: 1.8rem;
+    height: 1.8rem;
+  }
+
+  .searchSection {
+    width: 90%;
+  }
+
+  .inputField {
+    font-size: 0.6rem;
+  }
+
+  .buttonWallet {
+    font-size: 0.7rem;
+  }
+
+  .main {
+    margin: 0;
+    min-height: 30vh;
+  }
+
+  .heroSection {
+    display: none;
+  }
+  .nav_bar_mobile {
+    display: block;
+  }
+}

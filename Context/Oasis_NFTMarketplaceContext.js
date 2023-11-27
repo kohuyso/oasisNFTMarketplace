@@ -137,6 +137,7 @@ export const Oasis_NFTMarketplaceProvider = ({ children }) => {
           });
           console.log(transaction);
           transaction.wait();
+          router.push("/search");
         }
         // if (checkCreate) {
         //   console.log("Cha hieu");
@@ -228,6 +229,7 @@ export const Oasis_NFTMarketplaceProvider = ({ children }) => {
 
         console.log(transaction);
         transaction.wait();
+        router.push("/search");
       } else {
         console.log("Bạn cần kết nối tới ví metamask");
         setAlertMessage({
@@ -591,8 +593,8 @@ export const Oasis_NFTMarketplaceProvider = ({ children }) => {
       }
     } catch (error) {
       console.log(error);
-      console.log("Loi create sale");
-      setAlertMessage({ message: "Bán NFT thất bại", type: 1 });
+      console.log("Lỗi rút tiền");
+      setAlertMessage({ message: "Rút tiền thất bại", type: 1 });
 
       setOpenAlert(true);
     }
@@ -620,8 +622,8 @@ export const Oasis_NFTMarketplaceProvider = ({ children }) => {
       }
     } catch (error) {
       console.log(error);
-      console.log("Loi create sale");
-      setAlertMessage({ message: "Bán NFT thất bại", type: 1 });
+      console.log("Lỗi kết thúc đấu giá");
+      setAlertMessage({ message: "Lỗi kết thúc đấu giá", type: 1 });
 
       setOpenAlert(true);
     }

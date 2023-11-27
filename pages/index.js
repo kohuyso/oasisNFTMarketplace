@@ -36,6 +36,7 @@ const Home = () => {
   }, []);
 
   useEffect(() => {
+    console.log("AAAAAAAAAA");
     api_getTopNFT().then((item) => {
       if (item) {
         console.log(item);
@@ -53,7 +54,7 @@ const Home = () => {
       }
     });
   }, [allNft]);
-
+  console.log(topNFT);
   return (
     <div>
       <NavBar />

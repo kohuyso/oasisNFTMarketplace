@@ -237,9 +237,9 @@ const NavBar = () => {
             </a>
           </section>
           <section className={Style.carousel_section}>
-            <a href="https://soliditylang.org/" target="_blank">
+            <a href="https://coin98.net/vi-metamask" target="_blank">
               <Image
-                src={images.IntroSolidity}
+                src={images.metaMask}
                 alt="Solidity_image"
                 width=""
                 height=""

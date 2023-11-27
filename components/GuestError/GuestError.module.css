@@ -1,0 +1,61 @@
+.guestError {
+  background-color: rgb(250, 249, 246);
+  width: 100vw;
+  color: var(--icons-color);
+  font-size: 3rem;
+}
+
+.guestError_box {
+  width: 80%;
+  margin: 9rem auto;
+  gap: 2rem;
+  margin-top: 9rem;
+  padding: 2rem;
+  text-align: center;
+  border: 1px solid var(--icons-color);
+  border-radius: 10px;
+}
+
+.buttonWallet1 {
+  color: rgb(255, 255, 255) !important;
+  background-color: #ff8700 !important;
+  border-radius: 7rem !important;
+  padding: 0rem 5rem !important;
+  font-size: 1.05rem !important;
+}
+.buttonWallet1:hover {
+  color: #fff !important;
+  background-color: #d17b1b !important;
+}
+.button {
+  background-color: #ff8700;
+  padding: 1rem 2rem;
+  border-radius: 2rem;
+  font-size: 1.1rem;
+  color: var(--shadow-light-color);
+  cursor: pointer;
+  transition: all 0.2s ease-in;
+  box-shadow: var(--box-shadow);
+}
+.button:hover {
+  color: #fff !important;
+  background-color: #d17b1b !important;
+}
+.guestError_box_button {
+  margin-top: 3rem;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+}
+
+@media screen and (max-width: 767.9966px) {
+  .guestError_box {
+    width: 90%;
+  }
+}
+
+@media screen and (min-device-width: 768px) and (max-device-width: 1024px) {
+  .guestError_box {
+    width: 90%;
+  }
+}

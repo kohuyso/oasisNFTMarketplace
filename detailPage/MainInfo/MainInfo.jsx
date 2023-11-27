@@ -63,6 +63,7 @@ const MainInfo = ({ nftData, nftDataApiSub }) => {
     //     setUpdateData(item);
     //   }
     // });
+    UP();
   }, []);
 
   useEffect(() => {
@@ -74,6 +75,7 @@ const MainInfo = ({ nftData, nftDataApiSub }) => {
         setUpdateData(item);
       }
     });
+    UP();
   }, [nftData]);
 
   const UP = () => {

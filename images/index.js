@@ -24,6 +24,7 @@ import kindArt from "./artKind.webp";
 import kindGame from "./kindGame.jpg";
 import kindFashion from "./nft_fashion.jpg";
 import kindOther from "./kindOther.jpg";
+import metaMask from "./metaMask.jpg";
 
 export default {
   sitdeLogo,
@@ -52,4 +53,5 @@ export default {
   kindFashion,
   kindOther,
   kindGame,
+  metaMask,
 };

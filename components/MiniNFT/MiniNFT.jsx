@@ -12,36 +12,41 @@ const MiniNFT = ({
   data = [{ seller: "" }],
   accountDataAPI = [{ _id: "", account: "" }],
 }) => {
-  const [nftsData, setNftsData] = useState([]);
+  const [avatar, setAvatar] = useState({});
   console.log(data);
   console.log(accountDataAPI);
   useEffect(() => {
-    const tempData = [];
-    for (const nft of data) {
-      let tempNFT = nft;
-      for (const account of accountDataAPI) {
-        if (nft.seller == account._id) {
-          tempNFT.accountAvatar = account.avatar;
-        }
+    let isMounted = true;
+    console.log(data);
+
+    if (isMounted && accountDataAPI.length != 0) {
+      let tempAllAccount = {};
+      console.log(accountDataAPI.length);
+      for (let index = 0; index < accountDataAPI.length; index++) {
+        tempAllAccount[accountDataAPI[index]._id] =
+          accountDataAPI[index].avatar;
       }
-      tempData.push(tempNFT);
+      console.log(tempAllAccount);
+      setAvatar(tempAllAccount);
     }
-    setNftsData(data);
-  }, [accountDataAPI, data]);
+    return () => {
+      isMounted = false;
+    };
+  }, [accountDataAPI]);
 
   return (
     <div>
       <div className={Style.MiniNFT_wrapper}>
         <div className={Style.MiniNFT_title}>{title}</div>
         <div className={Style.MiniNFT_nft_list}>
-          {nftsData?.map((el, i) => (
+          {data?.map((el, i) => (
             <div className={Style.MiniNFT_nft_box} key={el.tokenId}>
               {el.auction?.ended || (
                 <div className={Style.auction_box}>
                   <FcAlarmClock className={Style.auction_icon} />
                   <div style={{ display: "flex", flexDirection: "row" }}>
                     Kết thúc sau:
-                    <CountdownTimer endTime={el.auction.acutionEndTime} />
+                    <CountdownTimer endTime={el.auction?.acutionEndTime} />
                   </div>
                 </div>
               )}
@@ -69,7 +74,7 @@ const MiniNFT = ({
                     }}
                   >
                     <Image
-                      src={el.accountAvatar || images.avatar1}
+                      src={avatar[el.seller] || images.avatar1}
                       alt="NFT images"
                       width={300}
                       height={300}

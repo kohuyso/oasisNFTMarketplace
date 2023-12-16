@@ -15,37 +15,43 @@ const CategoryCard = ({ allNft = [] }) => {
   ]);
 
   useEffect(() => {
-    const itemArts = [];
-    const itemAnimals = [];
-    const itemGames = [];
-    const itemFashions = [];
-    const itemOthers = [];
-    for (const value of allNft) {
-      if (value.category == "Arts") {
-        itemArts.push(value);
+    let isMounted = true;
+    if (isMounted && allNft.length != 0) {
+      const itemArts = [];
+      const itemAnimals = [];
+      const itemGames = [];
+      const itemFashions = [];
+      const itemOthers = [];
+      for (const value of allNft) {
+        if (value.category == "Arts") {
+          itemArts.push(value);
+        }
+        if (value.category == "Animals") {
+          itemAnimals.push(value);
+        }
+        if (value.category == "Games") {
+          itemGames.push(value);
+        }
+        if (value.category == "Fashions") {
+          itemFashions.push(value);
+        }
+        if (value.category == "Others") {
+          itemOthers.push(value);
+        }
       }
-      if (value.category == "Animals") {
-        itemAnimals.push(value);
-      }
-      if (value.category == "Games") {
-        itemGames.push(value);
-      }
-      if (value.category == "Fashions") {
-        itemFashions.push(value);
-      }
-      if (value.category == "Others") {
-        itemOthers.push(value);
-      }
+      setArrayNFT([
+        { cateName: "Arts", listNFT: itemArts },
+        { cateName: "Animals", listNFT: itemAnimals },
+        { cateName: "Games", listNFT: itemGames },
+        { cateName: "Fashions", listNFT: itemFashions },
+        { cateName: "Others", listNFT: itemOthers },
+      ]);
     }
-    setArrayNFT([
-      { cateName: "Arts", listNFT: itemArts },
-      { cateName: "Animals", listNFT: itemAnimals },
-      { cateName: "Games", listNFT: itemGames },
-      { cateName: "Fashions", listNFT: itemFashions },
-      { cateName: "Others", listNFT: itemOthers },
-    ]);
+    return () => {
+      isMounted = false;
+    };
   }, [allNft]);
-
+  console.log(arrayNFT);
   return (
     <div className={Style.wrapper}>
       <div className={Style.title}>Các chủ đề nổi bật</div>

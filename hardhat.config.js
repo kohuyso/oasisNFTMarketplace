@@ -7,6 +7,9 @@ module.exports = {
     apiKey: "6XDT8CR5EM5CRT8532WXQY97BNDIR13868",
   },
   networks: {
+    hardhat: {
+      chainId: 31337,
+    },
     sepolia: {
       url: `https://sepolia.infura.io/v3/dc03853a60d04540b6144467b09ba1e6`,
       accounts: [

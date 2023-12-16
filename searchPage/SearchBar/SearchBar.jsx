@@ -2,9 +2,25 @@ import React, { useEffect, useState } from "react";
 import { BsSearch, BsArrowRight } from "react-icons/bs";
 
 import Style from "./SearchBar.module.css";
+import { useRouter } from "next/router";
 const SearchBar = ({ onHandleSearch }) => {
+  const router = useRouter();
+
   const [search, setSearch] = useState("");
   const [searchItem, setSearchItem] = useState(search);
+  useEffect(() => {
+    let isMounted = true;
+    if (isMounted) {
+      if (!router.isReady) {
+        return;
+      }
+      console.log(router.query);
+      setSearchItem(router.query.search);
+    }
+    return () => {
+      isMounted = false;
+    };
+  }, [router.isReady]);
 
   useEffect(() => {
     const time = setTimeout(() => setSearch(searchItem), 500);
@@ -20,7 +36,10 @@ const SearchBar = ({ onHandleSearch }) => {
   return (
     <div className={Style.SearchBar}>
       <div className={Style.SearchBar_box}>
-        <BsSearch className={Style.SearchBar_box_icon} />
+        <BsSearch
+          className={Style.SearchBar_box_icon}
+          onClick={() => onHandleSearch(searchItem)}
+        />
         <input
           type="text"
           placeholder="Tìm kiếm NFT"

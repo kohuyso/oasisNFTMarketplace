@@ -3,69 +3,75 @@ import {
   NavBar,
   MiniNFT,
   CategoryCard,
-  ArtistCard,
   Footer,
 } from "@/components/componentsIndex";
 
 import { Oasis_NFTMarketplaceContext } from "@/Context/Oasis_NFTMarketplaceContext";
-import axios from "axios";
 import { Oasis_APIContext } from "@/Context/Oasis_APIContext";
+import ArtistCardForHome from "@/components/ArtistCardForHome/ArtistCardForHome";
+import MiniNFTForHome from "@/components/MiniNFT/MiniNFTForHome";
 const Home = () => {
-  const { fetchNFTs } = useContext(Oasis_NFTMarketplaceContext);
-  const { api_getTop10, api_getTopNFT } = useContext(Oasis_APIContext);
+  const { fetchNFTs, fetchNFTsByPage } = useContext(
+    Oasis_NFTMarketplaceContext
+  );
+  const { api_getTopNFT } = useContext(Oasis_APIContext);
 
   const [allNft, setAllNft] = useState([]);
-  const [accounts, setAccounts] = useState([]);
   const [topNFT, setTopNFT] = useState([]);
 
   useEffect(() => {
-    fetchNFTs().then((item) => {
-      if (item) {
-        setAllNft(item.reverse());
-      }
-    });
+    let isMounted = true;
+    if (isMounted) {
+      fetchNFTsByPage(0).then((item) => {
+        if (item) {
+          setAllNft(item);
+        }
+      });
+    }
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   useEffect(() => {
-    api_getTop10().then((item) => {
-      if (item) {
-        console.log(item);
-        setAccounts(item);
-      }
-    });
-  }, []);
-
-  useEffect(() => {
-    console.log("AAAAAAAAAA");
-    api_getTopNFT().then((item) => {
-      if (item) {
-        console.log(item);
-        setTopNFT(
-          allNft.filter((el) => {
-            console.log(el);
-            for (let index = 0; index < item.length; index++) {
-              if (el.tokenId == item[index]._id) {
-                console.log(el);
-                return el;
+    let isMounted = true;
+    if (isMounted && allNft.length != 0) {
+      console.log("AAAAAAAAAA");
+      api_getTopNFT().then((item) => {
+        if (item) {
+          console.log(item);
+          setTopNFT(
+            allNft.filter((el) => {
+              console.log(el);
+              for (let index = 0; index < item.length; index++) {
+                if (el.tokenId == item[index]._id) {
+                  console.log(el);
+                  return el;
+                }
               }
-            }
-          })
-        );
-      }
-    });
+            })
+          );
+        }
+      });
+    }
+    return () => {
+      isMounted = false;
+    };
   }, [allNft]);
   console.log(topNFT);
+  console.log(allNft);
+
   return (
     <div>
       <NavBar />
       <div style={{ marginTop: "3rem" }}>
-        <MiniNFT title={"NFT nổi bật"} data={topNFT} />
+        <MiniNFTForHome title={"NFT nổi bật"} data={topNFT} />
       </div>
       <div style={{ marginTop: "3rem" }}>
         <CategoryCard allNft={allNft} />
       </div>
       <div style={{ marginTop: "3rem" }}>
-        <ArtistCard accounts={accounts} />
+        <ArtistCardForHome />
       </div>
       <Footer />
     </div>

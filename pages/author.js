@@ -9,7 +9,6 @@ import { Footer, Header } from "@/components/componentsIndex";
 import { Oasis_NFTMarketplaceContext } from "@/Context/Oasis_NFTMarketplaceContext";
 import { useRouter } from "next/router";
 import { useAddress } from "@thirdweb-dev/react";
-import Loading from "@/components/Loading/Loading";
 import AuthorBar from "@/authorPage/AuthorBar/AuthorBar";
 
 const author = () => {
@@ -27,51 +26,68 @@ const author = () => {
   const router = useRouter();
 
   useEffect(() => {
-    if (!router.isReady) {
-      return;
+    let isMounted = true;
+    if (isMounted) {
+      if (!router.isReady) {
+        return;
+      }
+      console.log(router.query);
+      setAuthorData(router.query);
     }
-    console.log(router.query);
-    setAuthorData(router.query);
+    return () => {
+      isMounted = false;
+    };
   }, [router.isReady]);
 
   useEffect(() => {
-    fetchMyNFTsOrListedNFTs("fetchItemsListed").then((items) => {
-      console.log(items);
-      setNft(items);
-    });
-    fetchMyNFTsOrListedNFTs("fetchMyNFTs").then((items) => {
-      console.log(items);
-      setmyNft(items);
-    });
-  }, []);
+    let isMounted = true;
+    if (isMounted) {
+      fetchMyNFTsOrListedNFTs("fetchItemsListed").then((items) => {
+        console.log(items);
+        setNft(items?.reverse());
+      });
+      fetchMyNFTsOrListedNFTs("fetchMyNFTs").then((items) => {
+        console.log(items);
+        setmyNft(items.reverse());
+      });
+
+      fetchNFTs().then((item) => {
+        if (item) {
+          console.log(item);
+          setNfts(item);
+        }
+      });
+    }
+    return () => {
+      isMounted = false;
+    };
+  }, [address]);
 
   useEffect(() => {
-    fetchNFTs().then((item) => {
-      if (item) {
-        console.log(item);
-        setNfts(item);
-      }
-    });
-  }, []);
+    let isMounted = true;
+    if (isMounted && nfts.length != 0) {
+      setOwnNft(
+        nfts.filter((el) => {
+          if (authorData.address == el.seller) {
+            return el;
+          }
+        })
+      );
 
-  useEffect(() => {
-    setOwnNft(
-      nfts.filter((el) => {
-        if (authorData.address == el.seller) {
-          return el;
-        }
-      })
-    );
-
-    setCreatedNft(
-      nfts.filter((el) => {
-        if (authorData.address == el.creator) {
-          return el;
-        }
-      })
-    );
-  }, [nfts]);
-
+      setCreatedNft(
+        nfts.filter((el) => {
+          if (authorData.address == el.creator) {
+            return el;
+          }
+        })
+      );
+    }
+    return () => {
+      isMounted = false;
+    };
+  }, [nfts, authorData]);
+  console.log(nfts);
+  console.log(authorData);
   return (
     <div style={{ width: "100%", backgroundColor: "rgb(250, 249, 246)" }}>
       <Header />

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useContext } from "react";
 import { ethers } from "ethers";
 import Wenb3Modal from "web3modal";
 
@@ -61,11 +61,16 @@ const connectingWithSmartContract = async () => {
 export const Oasis_NFTMarketplaceContext = React.createContext();
 
 export const Oasis_NFTMarketplaceProvider = ({ children }) => {
-  const { api_createNFT, api_updateAccountAddNFT } =
-    useContext(Oasis_APIContext);
+  const {
+    api_createNFT,
+    api_updateAccountAddNFT,
+    api_soldNFT,
+    api_updateNFTResell,
+    api_updateAccountAddAuctionID,
+    api_updateAccountWithdraw,
+  } = useContext(Oasis_APIContext);
 
   const address = useAddress();
-  console.log(address);
   const [alertMessage, setAlertMessage] = useState("");
   const [openAlert, setOpenAlert] = useState(false);
 
@@ -128,16 +133,18 @@ export const Oasis_NFTMarketplaceProvider = ({ children }) => {
                 formInputPrice,
                 address
               );
-              api_updateAccountAddNFT(address, image);
             }
           );
+          api_updateAccountAddNFT(address, image);
         } else {
           const transaction = await contract.resellToken(id, price, {
             value: listingPrice.toString(),
           });
           console.log(transaction);
           transaction.wait();
-          router.push("/search");
+          setTimeout(() => {
+            router.push("/search");
+          }, 9000);
         }
         // if (checkCreate) {
         //   console.log("Cha hieu");
@@ -194,7 +201,9 @@ export const Oasis_NFTMarketplaceProvider = ({ children }) => {
           const added = await client.add(data);
           const url = `${subdomain}/ipfs/${added.path}`;
           await createSale(url, price, image);
-          router.push("/search");
+          setTimeout(() => {
+            router.push("/search");
+          }, 9000);
         } catch (error) {}
       } else {
         console.log("Bạn cần kết nối tới ví metamask");
@@ -229,7 +238,9 @@ export const Oasis_NFTMarketplaceProvider = ({ children }) => {
 
         console.log(transaction);
         transaction.wait();
-        router.push("/search");
+        setTimeout(() => {
+          router.push("/search");
+        }, 9000);
       } else {
         console.log("Bạn cần kết nối tới ví metamask");
         setAlertMessage({
@@ -321,6 +332,100 @@ export const Oasis_NFTMarketplaceProvider = ({ children }) => {
     }
   };
 
+  const fetchNFTsByPage = async (pageNumber) => {
+    try {
+      console.log(pageNumber);
+      const provider = new ethers.providers.JsonRpcProvider(
+        "https://sepolia.infura.io/v3/dc03853a60d04540b6144467b09ba1e6"
+      );
+      console.log(provider);
+      const contract = fetchContract(provider);
+      console.log(contract);
+      const data = await contract.fetchMarketItemPage(pageNumber, 16);
+      console.log(data);
+      let tempData = [];
+      for (let index = 0; index < data.length; index++) {
+        if (
+          data[index].seller != "0x0000000000000000000000000000000000000000"
+        ) {
+          console.log(data[index]);
+          tempData.push(data[index]);
+        }
+      }
+      console.log(data);
+      console.log(tempData);
+      if (tempData.length == 0) {
+        setAlertMessage({
+          message: "Vượt quá số NFT hiện có, mời tìm kiếm ở trang trước",
+          type: 1,
+        });
+        setOpenAlert(true);
+        return;
+      }
+      const items = await Promise.all(
+        tempData.map(
+          async ({
+            tokenId,
+            seller,
+            owner,
+            price: unformattedPrice,
+            auction,
+          }) => {
+            const tokenURI = await contract.tokenURI(tokenId);
+
+            console.log(tokenURI);
+
+            const tempData = await axios.get(tokenURI);
+
+            console.log(tempData);
+            const name = tempData.data.name;
+            const description = tempData.data.description;
+            const image = tempData.data.image;
+            const category = tempData.data.category;
+            const creator = tempData.data.creator;
+
+            const price = ethers.utils.formatUnits(
+              unformattedPrice.toString(),
+              "ether"
+            );
+
+            return {
+              tokenId: tokenId.toNumber(),
+              price,
+              name,
+              description,
+              image,
+              owner,
+              seller,
+              category,
+              creator,
+              tokenURI,
+              auction: {
+                AuctionId: auction[0].toNumber(),
+                acutionEndTime: auction[1].toString(),
+                highestPrice: ethers.utils.formatUnits(
+                  auction[2].toString(),
+                  "ether"
+                ),
+                highestPayer: auction[3],
+                ended: auction[4],
+              },
+            };
+          }
+        )
+      );
+      console.log(items);
+      return items;
+    } catch (error) {
+      setAlertMessage({
+        message: "Vượt quá số NFT hiện có, mời tìm kiếm ở trang trước",
+        type: 1,
+      });
+      setOpenAlert(true);
+      console.log("Loi fetch NFTs");
+    }
+  };
+
   const fetchMyNFTsOrListedNFTs = async (type) => {
     try {
       const contract = await connectingWithSmartContract();
@@ -392,7 +497,9 @@ export const Oasis_NFTMarketplaceProvider = ({ children }) => {
 
   const getSingleNFT = async (tokenId) => {
     try {
-      const provider = new ethers.providers.JsonRpcProvider();
+      const provider = new ethers.providers.JsonRpcProvider(
+        "https://sepolia.infura.io/v3/dc03853a60d04540b6144467b09ba1e6"
+      );
       const contract = fetchContract(provider);
       console.log(tokenId);
       const data = await contract.getSingleNFT(tokenId);
@@ -471,7 +578,11 @@ export const Oasis_NFTMarketplaceProvider = ({ children }) => {
         // const transaction = await contract.createMarketSale(nft.tokenId);
         await transaction.wait();
         console.log(transaction);
-        router.push("/author?address=" + authorAddress);
+        api_soldNFT(nft.tokenId);
+
+        setTimeout(() => {
+          router.push("/author?address=" + authorAddress);
+        }, 9000);
       } else {
         console.log("Bạn cần kết nối tới ví metamask");
         setAlertMessage({
@@ -509,6 +620,9 @@ export const Oasis_NFTMarketplaceProvider = ({ children }) => {
         });
         transaction.wait();
         console.log(transaction);
+        setTimeout(() => {
+          router.push("/search");
+        }, 9000);
         setAlertMessage({ message: "Tao dau gia thanh cong", type: 2 });
 
         setOpenAlert(true);
@@ -530,7 +644,7 @@ export const Oasis_NFTMarketplaceProvider = ({ children }) => {
     }
   };
 
-  const createBidAuction = async (_tokenId, formInputPrice) => {
+  const createBidAuction = async (_tokenId, formInputPrice, auctionID) => {
     try {
       if (address) {
         console.log(_tokenId, formInputPrice);
@@ -548,6 +662,12 @@ export const Oasis_NFTMarketplaceProvider = ({ children }) => {
         });
         transaction.wait();
         console.log(transaction);
+        api_updateAccountAddAuctionID(
+          _tokenId,
+          auctionID,
+          address,
+          formInputPrice
+        );
         setAlertMessage({ message: "Dat gia thanh cong", type: 2 });
 
         setOpenAlert(true);
@@ -569,7 +689,7 @@ export const Oasis_NFTMarketplaceProvider = ({ children }) => {
     }
   };
 
-  const auctionWithdraw = async (_auctionId) => {
+  const auctionWithdraw = async (_auctionId, _nftID) => {
     try {
       if (address) {
         console.log(_auctionId);
@@ -578,6 +698,7 @@ export const Oasis_NFTMarketplaceProvider = ({ children }) => {
 
         const transaction = await contract.auctionWithdraw(_auctionId);
         transaction.wait();
+        await api_updateAccountWithdraw(_nftID, _auctionId, address);
         console.log(transaction);
         setAlertMessage({ message: "Rut tien thanh cong", type: 2 });
 
@@ -600,7 +721,12 @@ export const Oasis_NFTMarketplaceProvider = ({ children }) => {
     }
   };
 
-  const auctionEnded = async (_tokenId) => {
+  const auctionEnded = async (
+    _tokenId,
+    _highestPrice,
+    _auctionId,
+    _highestPayer
+  ) => {
     try {
       if (address) {
         console.log(_tokenId);
@@ -610,7 +736,18 @@ export const Oasis_NFTMarketplaceProvider = ({ children }) => {
 
         const transaction = await contract.auctionEnd(_tokenId);
         transaction.wait();
+        api_soldNFT(_tokenId);
+        api_updateNFTResell(_tokenId, _highestPrice, true);
+        api_updateAccountAddAuctionID(
+          _tokenId,
+          _auctionId,
+          _highestPayer,
+          _highestPrice * -1
+        );
         console.log(transaction);
+        setTimeout(() => {
+          router.push("/author?address=" + _highestPayer);
+        }, 9000);
       } else {
         console.log("Bạn cần kết nối tới ví metamask");
         setAlertMessage({
@@ -647,6 +784,7 @@ export const Oasis_NFTMarketplaceProvider = ({ children }) => {
         createBidAuction,
         auctionWithdraw,
         auctionEnded,
+        fetchNFTsByPage,
       }}
     >
       {children}

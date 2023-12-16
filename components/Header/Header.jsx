@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -11,7 +11,6 @@ import { FaBars } from "react-icons/fa";
 
 import images from "../../images";
 import NavBarMobile from "../NavBar/NavBarMobile/NavBarMobile";
-import { useState } from "react";
 import { useRouter } from "next/router";
 import { Oasis_NFTMarketplaceContext } from "@/Context/Oasis_NFTMarketplaceContext";
 import AlertComponent from "../AlertComponent/AlertComponent";
@@ -28,29 +27,36 @@ const Header = () => {
 
   const [mobileNavbar, setMobileNavbar] = useState(false);
   const [user, setUser] = useState();
+  const [searchItem, setSearchItem] = useState("");
 
   const openMobileNavbar = () => {
     setMobileNavbar(!mobileNavbar);
   };
 
   useEffect(() => {
-    var checkExist = false;
-    api_getAllAccount().then((el) => {
-      console.log(el);
-      el?.forEach((elemnet) => {
-        if (elemnet._id == address) {
-          checkExist = true;
-        }
+    let isMounted = true;
+    if (isMounted) {
+      var checkExist = false;
+      api_getAllAccount().then((el) => {
+        console.log(el);
+        el?.forEach((elemnet) => {
+          if (elemnet._id == address) {
+            checkExist = true;
+          }
+        });
       });
-    });
-    console.log(checkExist);
-    if (checkExist == false && address) {
-      api_createAccount(address);
-    }
+      console.log(checkExist);
+      if (checkExist == false && address) {
+        api_createAccount(address);
+      }
 
-    api_getOneAccount(address).then((item) => {
-      setUser(item);
-    });
+      api_getOneAccount(address).then((item) => {
+        setUser(item);
+      });
+    }
+    return () => {
+      isMounted = false;
+    };
   }, [address]);
 
   return (
@@ -88,12 +94,19 @@ const Header = () => {
           <div className={Style.searchSection}>
             <div>
               <span>
-                <Search />
+                );
+                <Search
+                  onClick={() => {
+                    router.push("/search?search=" + searchItem);
+                  }}
+                />
               </span>
               <input
                 placeholder="Tìm kiếm các NFT và chủ đề"
                 disabled=""
                 className={Style.inputField}
+                onChange={(e) => setSearchItem(e.target.value)}
+                value={searchItem}
               />
             </div>
           </div>
@@ -111,7 +124,7 @@ const Header = () => {
 
                   <button
                     className={Style.button}
-                    onClick={() => router.push("/author")}
+                    onClick={() => router.push("/author/?address=" + address)}
                   >
                     Bộ sưu tập
                   </button>
@@ -122,9 +135,12 @@ const Header = () => {
                   >
                     Tìm kiếm
                   </button>
-                  <Link href="/">
-                    <button className={Style.button}>Biến động ETH</button>
-                  </Link>
+                  <button
+                    className={Style.button}
+                    onClick={() => router.push("/withdraw")}
+                  >
+                    Rút tiền đấu giá
+                  </button>
                 </div>
               )}
             >

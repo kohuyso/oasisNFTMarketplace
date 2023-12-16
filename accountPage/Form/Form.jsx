@@ -105,10 +105,11 @@ const Form = ({ fileUrl, accountData }) => {
                 type="text"
                 placeholder={accountData._id || "address"}
                 value={address}
+                id="myInput"
               />
               <div
                 className={Style.Form_box_input_box_icon}
-                onClick={() => copyAddress}
+                onClick={() => copyAddress()}
               >
                 <MdOutlineContentCopy onClick={() => copyAddress()} />
               </div>

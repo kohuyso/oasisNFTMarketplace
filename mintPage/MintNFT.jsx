@@ -15,7 +15,6 @@ import { Oasis_APIContext } from "@/Context/Oasis_APIContext";
 const MintNFT = ({ uploadToIPFS, createNFT }) => {
   const router = useRouter();
   const address = useAddress();
-  const { api_updateAccountAddNFT } = useContext(Oasis_APIContext);
 
   const [active, setActive] = useState(false);
   const [name, setName] = useState("");
@@ -125,6 +124,7 @@ const MintNFT = ({ uploadToIPFS, createNFT }) => {
               placeholder="Giá NFT"
               className={formStyle.Form_box_input_userName}
               onChange={(e) => setPrice(e.target.value)}
+              value={price}
             />
           </div>
         </div>

@@ -26,7 +26,7 @@ const SubInfo = ({ nftData, nftDataApiSub }) => {
         </div>
         <div className={Style.detail_bot}>
           <div className={Style.detail_bot_item}>
-            <div>Contract address</div>
+            <div>Transaction Hash</div>
             <a
               href={
                 "https://sepolia.etherscan.io/tx/" +

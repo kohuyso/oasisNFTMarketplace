@@ -1,10 +1,8 @@
 import React, { useContext, useEffect } from "react";
 import { useState } from "react";
-import images from "@/images";
 
 import Style from "./NFTKind.module.css";
-import { ArtistCard, MiniNFT } from "../componentsIndex";
-import { Oasis_APIContext } from "@/Context/Oasis_APIContext";
+import MiniNFTForHome from "../MiniNFT/MiniNFTForHome";
 
 const NFTKind = ({
   filter,
@@ -15,11 +13,7 @@ const NFTKind = ({
 }) => {
   console.log(NFTData);
 
-  const { api_getAllAccount } = useContext(Oasis_APIContext);
-  // const { fetchNFTs } = useContext(Oasis_NFTMarketplaceContext);
-
   const [activeBtn, setActiveBtn] = useState(6);
-  const [testNFT, setTestNFT] = useState([]);
   const [allNFT, setAllNFT] = useState(true);
   const [possess, setpossess] = useState(false);
   const [created, setCreated] = useState(false);
@@ -27,54 +21,9 @@ const NFTKind = ({
   const [follower, setFollower] = useState(false);
   const [following, setFollowing] = useState(false);
 
-  const [nftLiked, setNftLiked] = useState();
-  const [followerAccount, setFollowerAccount] = useState([]);
-  const [followingAccount, setFollowingAccount] = useState([]);
-  const [accountDataAPI, setAccountDataAPI] = useState({
-    like: [],
-    follower: [],
-    following: [],
-  });
-  const [allAccountDataAPI, setAllAccountDataAPI] = useState([]);
-
-  useEffect(() => {
-    api_getAllAccount().then((item) => {
-      if (item) {
-        setAllAccountDataAPI(item);
-      }
-    });
-  }, []);
-
-  useEffect(() => {
-    setTestNFT(NFTData);
-  }, [NFTData]);
-
-  useEffect(() => {
-    console.log(accountDataAPI);
-    api_getAllAccount().then((item) => {
-      if (item) {
-        console.log(item);
-        setFollowerAccount(
-          item.filter((el) => {
-            for (const element of accountDataAPI.follower) {
-              if (el._id == element) {
-                return el;
-              }
-            }
-          })
-        );
-        setFollowingAccount(
-          item.filter((el) => {
-            for (const element of accountDataAPI.following) {
-              if (el._id == element) {
-                return el;
-              }
-            }
-          })
-        );
-      }
-    });
-  }, [accountDataAPI]);
+  // useEffect(() => {
+  //   setTestNFT(NFTData);
+  // }, [NFTData]);
 
   // useEffect(() => {
   //   fetchNFTs().then((item) => {
@@ -84,20 +33,6 @@ const NFTKind = ({
   //     }
   //   });
   // }, []);
-
-  useEffect(() => {
-    setNftLiked(
-      nfts?.filter((nft) => {
-        for (let i = 0; i < accountDataAPI.like.length; i += 1) {
-          if (nft.tokenId == accountDataAPI.like[i]) {
-            console.log(nft);
-            return nft;
-          }
-        }
-      })
-    );
-    // }, [nfts]);
-  }, [possess]);
 
   const openTab = (e) => {
     const btnText = e.target.innerText;
@@ -203,58 +138,46 @@ const NFTKind = ({
           </div>
         </div>
       </div>
-
       <div className={Style.list}>
-        {allNFT && (
-          <MiniNFT
-            title={"Kết quả tìm kiếm"}
-            data={testNFT}
-            accountDataAPI={allAccountDataAPI}
-          />
-        )}
+        {allNFT && <MiniNFTForHome title={"Kết quả tìm kiếm"} data={NFTData} />}
         {possess && (
-          <MiniNFT
+          <MiniNFTForHome
             title={"Kết quả tìm kiếm"}
-            data={testNFT?.filter(({ category }) => {
+            data={NFTData?.filter(({ category }) => {
               return category == filter[1];
             })}
-            accountDataAPI={allAccountDataAPI}
           />
         )}
         {created && (
-          <MiniNFT
+          <MiniNFTForHome
             title={"Kết quả tìm kiếm"}
-            data={testNFT.filter(({ category }) => {
+            data={NFTData.filter(({ category }) => {
               return category == filter[2];
             })}
-            accountDataAPI={allAccountDataAPI}
           />
         )}
         {like && (
-          <MiniNFT
+          <MiniNFTForHome
             title={"Kết quả tìm kiếm"}
-            data={testNFT.filter(({ category }) => {
+            data={NFTData.filter(({ category }) => {
               return category == filter[3];
             })}
-            accountDataAPI={allAccountDataAPI}
           />
         )}
         {follower && (
-          <MiniNFT
+          <MiniNFTForHome
             title={"Kết quả tìm kiếm"}
-            data={testNFT.filter(({ category }) => {
+            data={NFTData.filter(({ category }) => {
               return category == filter[4];
             })}
-            accountDataAPI={allAccountDataAPI}
           />
         )}
         {following && (
-          <MiniNFT
+          <MiniNFTForHome
             title={"Kết quả tìm kiếm"}
-            data={testNFT.filter(({ category }) => {
+            data={NFTData.filter(({ category }) => {
               return category == filter[5];
             })}
-            accountDataAPI={allAccountDataAPI}
           />
         )}
       </div>

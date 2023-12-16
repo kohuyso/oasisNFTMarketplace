@@ -62,8 +62,9 @@ const NavBarMobile = ({ handleClick }) => {
         />
         <Button
           className={Style.item}
-          btnName="Dự đoán biến động ETH"
+          btnName="Rút tiền đấu giâ"
           classButton="buyButton"
+          onClick={() => router.push("/withdraw")}
         />
       </div>
       <div className={Style.buttonWallet1}>

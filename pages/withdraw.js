@@ -8,25 +8,29 @@ import GuestError from "@/components/GuestError/GuestError";
 
 const withdraw = () => {
   const { auctionWithdraw } = useContext(Oasis_NFTMarketplaceContext);
-  const { api_getOneAccount, api_updateAccountWithdraw } =
-    useContext(Oasis_APIContext);
+  const { api_getOneAccount } = useContext(Oasis_APIContext);
   const address = useAddress();
 
   const [withdrawData, setWithdrawData] = useState([]);
 
   useEffect(() => {
-    console.log("AAAAAAAAAAAA");
-    api_getOneAccount(address).then((item) => {
-      if (item) {
-        console.log(item);
-        setWithdrawData(item.auctionList);
-      }
-    });
+    let isMounted = true;
+    if (isMounted) {
+      console.log("AAAAAAAAAAAA");
+      api_getOneAccount(address).then((item) => {
+        if (item) {
+          console.log(item);
+          setWithdrawData(item.auctionList);
+        }
+      });
+    }
+    return () => {
+      isMounted = false;
+    };
   }, [address]);
 
   const handleWithdraw = async (_auctionId, _nftID) => {
-    auctionWithdraw(_auctionId);
-    await api_updateAccountWithdraw(_nftID, _auctionId, address);
+    await auctionWithdraw(_auctionId, _nftID);
     await api_getOneAccount(address).then((item) => {
       if (item) {
         console.log(item);

@@ -14,9 +14,9 @@ const AuthorBar = ({
 }) => {
   console.log(NFTData);
 
-  const { api_getOneAccount, api_getAllAccount } = useContext(Oasis_APIContext);
+  const { api_getOneAccount, api_getTop10 } = useContext(Oasis_APIContext);
 
-  const [activeBtn, setActiveBtn] = useState(1);
+  const [activeBtn, setActiveBtn] = useState(0);
   const [possess, setpossess] = useState(false);
   const [created, setCreated] = useState(false);
   const [like, setLike] = useState(false);
@@ -34,60 +34,72 @@ const AuthorBar = ({
   const [allAccountDataAPI, setAllAccountDataAPI] = useState([]);
 
   useEffect(() => {
-    api_getOneAccount(authorData.address).then((item) => {
-      if (item) {
-        console.log(item);
-        setAccountDataAPI({
-          like: item.like,
-          follower: item.follower,
-          following: item.following,
-        });
-      }
-    });
+    let isMounted = true;
+    if (isMounted) {
+      api_getOneAccount(authorData.address).then((item) => {
+        if (item) {
+          console.log(item);
+          setAccountDataAPI({
+            like: item.like,
+            follower: item.follower,
+            following: item.following,
+          });
+        }
+      });
 
-    api_getAllAccount().then((item) => {
-      if (item) {
-        setAllAccountDataAPI(item);
-      }
-    });
+      api_getTop10().then((item) => {
+        if (item) {
+          setAllAccountDataAPI(item);
+        }
+      });
+    }
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   useEffect(() => {
-    console.log(accountDataAPI);
-    api_getAllAccount().then((item) => {
-      if (item) {
-        console.log(item);
-        setFollowerAccount(
-          item.filter((el) => {
-            for (const element of accountDataAPI.follower) {
-              if (el._id == element) {
-                return el;
+    let isMounted = true;
+    if (isMounted) {
+      console.log(accountDataAPI);
+      api_getTop10().then((item) => {
+        if (item) {
+          console.log(item);
+          setFollowerAccount(
+            item.filter((el) => {
+              for (const element of accountDataAPI.follower) {
+                if (el._id == element) {
+                  return el;
+                }
               }
-            }
-          })
-        );
-        setFollowingAccount(
-          item.filter((el) => {
-            for (const element of accountDataAPI.following) {
-              if (el._id == element) {
-                return el;
+            })
+          );
+          setFollowingAccount(
+            item.filter((el) => {
+              for (const element of accountDataAPI.following) {
+                if (el._id == element) {
+                  return el;
+                }
               }
-            }
-          })
-        );
-      }
-    });
+            })
+          );
 
-    setNftLiked(
-      nfts?.filter((nft) => {
-        for (let i = 0; i < accountDataAPI.like.length; i += 1) {
-          if (nft.tokenId == accountDataAPI.like[i]) {
-            console.log(nft);
-            return nft;
-          }
+          setNftLiked(
+            nfts?.filter((nft) => {
+              for (let i = 0; i < accountDataAPI.like.length; i += 1) {
+                if (nft.tokenId == accountDataAPI.like[i]) {
+                  console.log(nft);
+                  return nft;
+                }
+              }
+            })
+          );
         }
-      })
-    );
+      });
+    }
+    return () => {
+      isMounted = false;
+    };
   }, [accountDataAPI]);
 
   const openTab = (e) => {

@@ -26,9 +26,15 @@ const NavBar = () => {
   const [mobileNavbar, setMobileNavbar] = useState(false);
 
   useEffect(() => {
-    setTimeout(() => {
-      setSearchResult([]);
-    }, 0);
+    let isMounted = true;
+    if (isMounted) {
+      setTimeout(() => {
+        setSearchResult([]);
+      }, 0);
+    }
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   const openMobileNavbar = () => {
@@ -36,23 +42,29 @@ const NavBar = () => {
   };
 
   useEffect(() => {
-    var checkExist = false;
-    api_getAllAccount().then((el) => {
-      console.log(el);
-      el?.forEach((elemnet) => {
-        if (elemnet._id == address) {
-          checkExist = true;
-        }
+    let isMounted = true;
+    if (isMounted) {
+      var checkExist = false;
+      api_getAllAccount().then((el) => {
+        console.log(el);
+        el?.forEach((elemnet) => {
+          if (elemnet._id == address) {
+            checkExist = true;
+          }
+        });
       });
-    });
-    console.log(checkExist);
-    if (checkExist == false && address) {
-      api_createAccount(address);
-    }
+      console.log(checkExist);
+      if (checkExist == false && address) {
+        api_createAccount(address);
+      }
 
-    api_getOneAccount(address).then((item) => {
-      setUser(item);
-    });
+      api_getOneAccount(address).then((item) => {
+        setUser(item);
+      });
+    }
+    return () => {
+      isMounted = false;
+    };
   }, [address]);
 
   return (
@@ -112,7 +124,7 @@ const NavBar = () => {
 
                   <button
                     className={Style.button}
-                    onClick={() => router.push("/author")}
+                    onClick={() => router.push("/author/?address=" + address)}
                   >
                     Bộ sưu tập
                   </button>
@@ -123,10 +135,12 @@ const NavBar = () => {
                   >
                     Tìm kiếm
                   </button>
-
-                  <Link href="/">
-                    <button className={Style.button}>Rút tiền đấu giá</button>
-                  </Link>
+                  <button
+                    className={Style.button}
+                    onClick={() => router.push("/withdraw")}
+                  >
+                    Rút tiền đấu giá
+                  </button>
                 </div>
               )}
             >

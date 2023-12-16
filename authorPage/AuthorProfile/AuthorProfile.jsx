@@ -26,25 +26,32 @@ const AuthorProfile = ({ authorData }) => {
   const [accountData, setAccountData] = useState();
 
   useEffect(() => {
-    api_getOneAccount(authorData.address).then((item) => {
-      if (item) {
-        setAccountData(item);
+    let isMounted = true;
+    if (isMounted && authorData.address != "") {
+      api_getOneAccount(authorData.address).then((item) => {
         console.log(item);
-        const checkFollow = item.follower.find((el) => {
-          console.log(el);
-          console.log(address);
-
-          if (el == address) {
+        if (item) {
+          setAccountData(item);
+          console.log(item);
+          const checkFollow = item.follower.find((el) => {
             console.log(el);
-            return el;
+            console.log(address);
+
+            if (el == address) {
+              console.log(el);
+              return el;
+            }
+          });
+          console.log(checkFollow);
+          if (checkFollow) {
+            setFollowState(true);
           }
-        });
-        console.log(checkFollow);
-        if (checkFollow) {
-          setFollowState(true);
         }
-      }
-    });
+      });
+    }
+    return () => {
+      isMounted = false;
+    };
   }, [authorData, address]);
 
   const copyAddress = () => {
@@ -82,7 +89,14 @@ const AuthorProfile = ({ authorData }) => {
         </div>
 
         <div className={Style.AuthorProfile_box_info}>
-          <h2>Nhà sáng tạo </h2>
+          <h2>
+            {" "}
+            {accountData?.name != "" ? (
+              <>{accountData?.name}</>
+            ) : (
+              <>Nhà sáng tạo</>
+            )}{" "}
+          </h2>
 
           <div>
             <input
@@ -98,8 +112,14 @@ const AuthorProfile = ({ authorData }) => {
           </div>
 
           <p>
-            Nhà sáng tạo nội dung, tác phẩm nghệ thuật ứng dụng công nghệ
-            blockchain
+            {accountData?.description != "" ? (
+              <>{accountData?.description}</>
+            ) : (
+              <>
+                Nhà sáng tạo nội dung, tác phẩm nghệ thuật ứng dụng công nghệ
+                blockchain
+              </>
+            )}
           </p>
 
           <div className={Style.AuthorProfile_box_info_social}>

@@ -1,0 +1,7 @@
+.search_pagination {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  margin-bottom: 10rem;
+  margin-top: 5rem;
+}

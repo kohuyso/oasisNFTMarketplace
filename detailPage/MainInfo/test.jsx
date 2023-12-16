@@ -13,10 +13,16 @@ import { useAddress } from "@thirdweb-dev/react";
 import { useRouter } from "next/router";
 import axios from "axios";
 import { Oasis_APIContext } from "@/Context/Oasis_APIContext";
+import CountdownTimer from "../CountdownTimer/CountdownTimer";
 
 const MainInfo = ({ nftData, nftDataApiSub }) => {
-  const { api_likeNFT, api_getOneAccount, api_updateAccountAddAuctionID } =
-    useContext(Oasis_APIContext);
+  const {
+    api_likeNFT,
+    api_getOneAccount,
+    api_updateAccountAddAuctionID,
+    api_updateNFTResell,
+    api_soldNFT,
+  } = useContext(Oasis_APIContext);
   const {
     buyNFT,
     createAuctionn,
@@ -29,6 +35,7 @@ const MainInfo = ({ nftData, nftDataApiSub }) => {
   const [maxPrice, setMaxPrice] = useState(null);
   const [creatorAvatar, setCreatorAvatar] = useState(images.avatar2);
   const [ownerAvatar, setOwnerAvatar] = useState(images.avatar2);
+
   const [createAuction, setCreateAuction] = useState(false);
   const [auction, setAuction] = useState(false);
   const [auctionStartPrice, setAuctionStartPrice] = useState(0);
@@ -40,38 +47,57 @@ const MainInfo = ({ nftData, nftDataApiSub }) => {
   const address = useAddress();
   const [like, setLike] = useState(false);
   const [ethUSDPrice, setEthUSDPrice] = useState(1733);
-
+  console.log(nftData);
   useEffect(() => {
-    try {
-      axios
-        .get(" https://min-api.cryptocompare.com/data/price?fsym=ETH&tsyms=USD")
-        .then((response) => {
-          console.log(response);
-          setEthUSDPrice(response.data.USD);
-        });
-    } catch (error) {
-      console.log(error);
+    let isMounted = true;
+    if (isMounted) {
+      try {
+        axios
+          .get(
+            " https://min-api.cryptocompare.com/data/price?fsym=ETH&tsyms=USD"
+          )
+          .then((response) => {
+            console.log(response);
+            setEthUSDPrice(response.data.USD);
+          });
+      } catch (error) {
+        console.log(error);
+      }
+
+      // UP();
+
+      console.log("Log set auction 1");
+      if (updateData.auction?.ended == false) {
+        setAuction(true);
+      } else {
+        setAuction(false);
+      }
     }
 
-    getSingleNFT(nftData.tokenId).then((item) => {
-      if (item) {
-        setUpdateData(item);
-      }
-    });
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   useEffect(() => {
-    getSingleNFT(1).then((item) => {
-      console.log(item);
-      console.log(item);
-      if (item) {
+    let isMounted = true;
+    if (isMounted) {
+      getSingleNFT(nftData.tokenId).then((item) => {
         console.log(item);
-        setUpdateData(item);
-      }
-    });
-  }, []);
+        if (item) {
+          console.log(item);
+          setUpdateData(item);
+        }
+      });
+      // UP();
+    }
 
-  useEffect(() => {
+    return () => {
+      isMounted = false;
+    };
+  }, [nftData]);
+
+  const UP = () => {
     console.log(nftData);
     try {
       api_getOneAccount(address).then((item) => {
@@ -84,61 +110,93 @@ const MainInfo = ({ nftData, nftDataApiSub }) => {
             }
           });
           console.log(checkLike);
-          if (checkLike) {
-            setLike(true);
-          } else {
-            setLike(false);
-          }
+        }
+        if (checkLike) {
+          setLike(true);
+        } else {
+          setLike(false);
         }
       });
 
-      api_getOneAccount(nftData.creator).then((item) => {
-        setCreatorAvatar(item?.avatar);
-      });
-      api_getOneAccount(nftData.owner).then((item) => {
-        setOwnerAvatar(item?.avatar);
-      });
+      // api_getOneAccount(nftDataApiSub.creator).then((item) => {
+      //   setCreatorAvatar(item?.avatar);
+      // });
     } catch (error) {
       console.log(error);
     }
-  }, [updateData]);
+  };
+  useEffect(() => {
+    let isMounted = true;
+    if (isMounted) {
+      UP();
+    }
+
+    return () => {
+      isMounted = false;
+    };
+  }, [updateData, address]);
 
   useEffect(() => {
-    console.log(nftDataApiSub);
-    nftDataApiSub.history.forEach((el, index) => {
-      if (index == 0) {
-        setMinPrice(el.price);
-      }
-      if (el.price > maxPrice) {
-        setMaxPrice(el.price);
-      }
-      if (el.price < minPrice) {
-        setMinPrice(el.price);
-      }
-    });
-    setLikeNumber(nftDataApiSub.like);
+    let isMounted = true;
+    if (isMounted) {
+      console.log(nftDataApiSub);
+      let tempMax = 0;
+      let tempMin = 0;
+      nftDataApiSub.history.forEach((el, index) => {
+        if (index == 0) {
+          tempMin = el.price;
+        }
+        if (el.price > tempMax) {
+          tempMax = el.price;
+        }
+        if (el.price < tempMin) {
+          tempMin = el.price;
+        }
+      });
+      setMaxPrice(tempMax);
+      setMinPrice(tempMin);
+      setLikeNumber(nftDataApiSub.like);
+      api_getOneAccount(nftDataApiSub.creator).then((item) => {
+        setCreatorAvatar(item?.avatar);
+      });
+      api_getOneAccount(updateData.seller).then((item) => {
+        setOwnerAvatar(item?.avatar);
+      });
+    }
+    return () => {
+      isMounted = false;
+    };
   }, [nftDataApiSub]);
 
   useEffect(() => {
-    if (updateData.auction?.ended == false) {
-      setAuction(true);
-    } else {
-      setAuction(false);
+    let isMounted = true;
+    if (isMounted) {
+      console.log("Log set auction" + auction);
+      if (updateData.auction?.ended == false) {
+        setAuction(true);
+      } else {
+        setAuction(false);
+      }
     }
+    return () => {
+      isMounted = false;
+    };
   }, [updateData]);
 
   console.log(nftData);
   console.log(updateData);
 
   const likeNFT = () => {
-    if (like == false) {
-      api_likeNFT(nftData.tokenId, address, 1);
-      setLike(true);
-      setLikeNumber(likeNumber + 1);
-    } else {
-      api_likeNFT(nftData.tokenId, address, -1);
-      setLike(false);
-      setLikeNumber(likeNumber - 1);
+    if (address) {
+      if (like == false) {
+        api_likeNFT(nftData.tokenId, address, 1);
+        setLike(true);
+        setLikeNumber(likeNumber + 1);
+      } else {
+        api_likeNFT(nftData.tokenId, address, -1);
+        setLike(false);
+        setLikeNumber(likeNumber - 1);
+      }
     }
     // api_likeNFT();
     // setLike(!like);
@@ -152,18 +210,25 @@ const MainInfo = ({ nftData, nftDataApiSub }) => {
     console.log("handleCreateAuction1");
     console.log(nftData);
 
-    getSingleNFT(nftData.tokenId).then((item) => {
-      if (item) {
-        console.log(item);
-        setUpdateData(item);
-      }
-    });
-    console.log("handleCreateAuction2");
-    setAuction(true);
+    // getSingleNFT(nftData.tokenId).then((item) => {
+    //   if (item) {
+    //     console.log(item);
+    //     setUpdateData(item);
+    //   }
+    // });
+    // console.log("handleCreateAuction2");
+    // setAuction(true);
+    setTimeout(() => {
+      router.push("/search");
+    }, 2500);
   };
 
   const handleCreateBidding = async () => {
     await createBidAuction(nftData.tokenId, auctionBidding);
+    // const checkUpdateWithdraw = await createBidAuction(
+    //   nftData.tokenId,
+    //   auctionBidding
+    // );
     console.log("handleCreateBidding");
     await getSingleNFT(nftData.tokenId).then((item) => {
       if (item) {
@@ -171,23 +236,46 @@ const MainInfo = ({ nftData, nftDataApiSub }) => {
         setUpdateData(item);
       }
     });
+
     api_updateAccountAddAuctionID(
       updateData.tokenId,
       updateData.auction?.AuctionId,
-      address
+      address,
+      auctionBidding
     );
   };
 
   const handleEndAuctin = async () => {
     await auctionEnded(nftData.tokenId);
+    await api_updateNFTResell(
+      nftData.tokenId,
+      updateData.auction?.highestPrice,
+      true
+    );
+    api_updateAccountAddAuctionID(
+      updateData.tokenId,
+      updateData.auction?.AuctionId,
+      updateData.auction?.highestPayer,
+      updateData.auction?.highestPrice * -1
+    );
     console.log("handleEndAuctin");
-    await getSingleNFT(nftData.tokenId).then((item) => {
-      if (item) {
-        console.log(item);
-        setUpdateData(item);
-      }
-    });
-    setAuction(false);
+    // await getSingleNFT(nftData.tokenId).then((item) => {
+    //   if (item) {
+    //     console.log(item);
+    //     setUpdateData(item);
+    //   }
+    // });
+    // setAuction(false);
+    // UP();
+
+    setTimeout(() => {
+      router.push("/author?address=" + updateData.auction?.highestPayer);
+    }, 2500);
+  };
+
+  const handleBuyNFT = () => {
+    buyNFT(nftData, address);
+    api_soldNFT(nftData.tokenId);
   };
 
   return (
@@ -197,9 +285,9 @@ const MainInfo = ({ nftData, nftDataApiSub }) => {
       </div>
 
       <Image
-        src={nftData.image}
-        width={100}
-        height={100}
+        src={nftData.image || images.NFT1}
+        width={1200}
+        height={1200}
         alt="NFT images"
         className={Style.nft_img}
       />
@@ -209,7 +297,329 @@ const MainInfo = ({ nftData, nftDataApiSub }) => {
         </div>
         {!auction ? (
           <>
-            {!createAuction ? (
+            {address == nftData.seller ? (
+              <>
+                {!createAuction ? (
+                  <>
+                    <div className={Style.info_owner_wrapper}>
+                      <div className={Style.info_owner_box}>
+                        <Link
+                          href={{
+                            pathname: "/author",
+                            query: { address: nftData.creator },
+                          }}
+                        >
+                          <Image
+                            src={creatorAvatar || images.avatar1}
+                            alt="creator images"
+                            width={300}
+                            height={300}
+                            className={Style.info_owner_avatar}
+                          />
+                          <div className={Style.info_owner_name}>
+                            <div style={{ fontWeight: "600" }}>Creator</div>
+
+                            <div>
+                              {nftData.creator?.slice(0, 8) +
+                                "..." +
+                                nftData.creator?.slice(-8)}
+                            </div>
+                          </div>
+                        </Link>
+                      </div>
+                      <div className={Style.info_owner_box}>
+                        <Link
+                          href={{
+                            pathname: "/author",
+                            query: { address: nftData.seller },
+                          }}
+                        >
+                          <Image
+                            src={ownerAvatar || images.avatar1}
+                            alt="owner images"
+                            width={300}
+                            height={300}
+                            className={Style.info_owner_avatar}
+                          />
+                          <div className={Style.info_owner_name}>
+                            <div style={{ fontWeight: "600" }}>Owner</div>
+                            <div>
+                              {nftData.seller?.slice(0, 8) +
+                                "..." +
+                                nftData.seller?.slice(-8)}
+                            </div>
+                          </div>
+                        </Link>
+                      </div>
+                    </div>
+                    <div className={Style.nft_items_wrapper}>
+                      <div className={Style.nft_item_box}>
+                        {like ? (
+                          <AiFillHeart
+                            className={Style.nft_item_icon}
+                            style={{ color: "red" }}
+                            onClick={() => likeNFT()}
+                          />
+                        ) : (
+                          <AiOutlineHeart
+                            className={Style.nft_item_icon}
+                            onClick={() => likeNFT()}
+                          />
+                        )}
+                        <div>{likeNumber} Likes</div>
+                      </div>
+                      <div className={Style.nft_item_box}>
+                        <FaShapes className={Style.nft_item_icon} />
+                        <div>{nftData.category}</div>
+                      </div>
+                      <div className={Style.nft_item_box}>
+                        <FaEthereum className={Style.nft_item_icon} />
+                        <div>Ethereum Chain</div>
+                      </div>
+                    </div>
+                    <div className={Style.nft_price_wrapper}>
+                      <div className={Style.nft_price_currentPrice}>
+                        <div> Giá hiện tại</div>
+                        <div style={{ display: "flex", flexDirection: "row" }}>
+                          <div> {nftData.price + " ETH"}</div>
+                          <FaEthereum className={Style.unit_icon} />
+                        </div>
+                        <div> ({ethUSDPrice * nftData.price} $)</div>
+                      </div>
+                      <div className={Style.nft_price_changePrice}>
+                        <div>{"Giá cao nhất: " + maxPrice + " ETH"}</div>
+                        <div>{"Giá thấp nhất: " + minPrice + " ETH"}</div>
+                      </div>
+                    </div>
+
+                    <div className={Style.nft_btn_box}>
+                      <Button
+                        btnName="Đặt lại giá"
+                        handleClick={() => {
+                          router.push(
+                            "/resell?tokenId=" +
+                              nftData.tokenId +
+                              "&image=" +
+                              nftData.image +
+                              "&name=" +
+                              nftData.name +
+                              "&ex=1"
+                          );
+                        }}
+                        classButton="buyButton"
+                      />
+                      <Button
+                        btnName="Đấu giá"
+                        handleClick={() => setCreateAuction(true)}
+                        classButton="buyButton"
+                      />
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <div className={Style.AuctionForm}>
+                      <div className={Style.Form_box_input}>
+                        <label htmlFor="time">Thời gian đấu giá </label>
+                        <input
+                          type="number"
+                          min="0"
+                          step="1"
+                          placeholder="Thời gian đấu giá - Theo giây"
+                          className={Style.Form_box_input_userName}
+                          onChange={(e) => setAuctionTime(e.target.value)}
+                          value={auctionTime}
+                        />
+                      </div>
+                      <div className={Style.Form_box_input}>
+                        <label htmlFor="time">Giá khởi điểm </label>
+                        <input
+                          type="number"
+                          min="0"
+                          placeholder="Giá khởi điểm"
+                          className={Style.Form_box_input_userName}
+                          onChange={(e) => setAuctionStartPrice(e.target.value)}
+                          value={auctionStartPrice}
+                        />
+                      </div>
+                    </div>
+
+                    <div className={Style.nft_btn_box}>
+                      <Button
+                        btnName="Tạo Đấu giá"
+                        handleClick={() => handleCreateAuction()}
+                        classButton="buyButton"
+                      />
+                      <Button
+                        btnName="Quay lại"
+                        handleClick={() => setCreateAuction(false)}
+                        classButton="buyButton"
+                      />
+                    </div>
+                  </>
+                )}
+              </>
+            ) : address == nftData.owner ? (
+              <>
+                {!createAuction ? (
+                  <>
+                    <div className={Style.info_owner_wrapper}>
+                      <div className={Style.info_owner_box}>
+                        <Link
+                          href={{
+                            pathname: "/author",
+                            query: { address: nftData.creator },
+                          }}
+                        >
+                          <Image
+                            src={creatorAvatar || images.avatar1}
+                            alt="creator images"
+                            width={300}
+                            height={300}
+                            className={Style.info_owner_avatar}
+                          />
+                          <div className={Style.info_owner_name}>
+                            <div style={{ fontWeight: "600" }}>Creator</div>
+
+                            <div>
+                              {nftData.creator?.slice(0, 8) +
+                                "..." +
+                                nftData.creator?.slice(-8)}
+                            </div>
+                          </div>
+                        </Link>
+                      </div>
+                      <div className={Style.info_owner_box}>
+                        <Link
+                          href={{
+                            pathname: "/author",
+                            query: { address: nftData.seller },
+                          }}
+                        >
+                          <Image
+                            src={ownerAvatar || images.avatar1}
+                            alt="owner images"
+                            width={300}
+                            height={300}
+                            className={Style.info_owner_avatar}
+                          />
+                          <div className={Style.info_owner_name}>
+                            <div style={{ fontWeight: "600" }}>Owner</div>
+                            <div>
+                              {nftData.seller?.slice(0, 8) +
+                                "..." +
+                                nftData.seller?.slice(-8)}
+                            </div>
+                          </div>
+                        </Link>
+                      </div>
+                    </div>
+                    <div className={Style.nft_items_wrapper}>
+                      <div className={Style.nft_item_box}>
+                        {like ? (
+                          <AiFillHeart
+                            className={Style.nft_item_icon}
+                            style={{ color: "red" }}
+                            onClick={() => likeNFT()}
+                          />
+                        ) : (
+                          <AiOutlineHeart
+                            className={Style.nft_item_icon}
+                            onClick={() => likeNFT()}
+                          />
+                        )}
+                        <div>{likeNumber} Likes</div>
+                      </div>
+                      <div className={Style.nft_item_box}>
+                        <FaShapes className={Style.nft_item_icon} />
+                        <div>{nftData.category}</div>
+                      </div>
+                      <div className={Style.nft_item_box}>
+                        <FaEthereum className={Style.nft_item_icon} />
+                        <div>Ethereum Chain</div>
+                      </div>
+                    </div>
+                    <div className={Style.nft_price_wrapper}>
+                      <div className={Style.nft_price_currentPrice}>
+                        <div> Giá hiện tại</div>
+                        <div style={{ display: "flex", flexDirection: "row" }}>
+                          <div> {nftData.price + " ETH"}</div>
+                          <FaEthereum className={Style.unit_icon} />
+                        </div>
+                        <div> ({ethUSDPrice * nftData.price} $)</div>
+                      </div>
+                      <div className={Style.nft_price_changePrice}>
+                        <div>{"Giá cao nhất: " + maxPrice + " ETH"}</div>
+                        <div>{"Giá thấp nhất: " + minPrice + " ETH"}</div>
+                      </div>
+                    </div>
+
+                    <div className={Style.nft_btn_box}>
+                      <Button
+                        btnName="Bán"
+                        handleClick={() => {
+                          router.push(
+                            "/resell?tokenId=" +
+                              nftData.tokenId +
+                              "&image=" +
+                              nftData.image +
+                              "&name=" +
+                              nftData.name +
+                              "&ex=0"
+                          );
+                        }}
+                        classButton="buyButton"
+                      />
+                      <Button
+                        btnName="Đấu giá"
+                        handleClick={() => setCreateAuction(true)}
+                        classButton="buyButton"
+                      />
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <div className={Style.AuctionForm}>
+                      <div className={Style.Form_box_input}>
+                        <label htmlFor="time">Thời gian đấu giá </label>
+                        <input
+                          type="number"
+                          min="0"
+                          step="1"
+                          placeholder="Thời gian đấu giá - Theo giây"
+                          className={Style.Form_box_input_userName}
+                          onChange={(e) => setAuctionTime(e.target.value)}
+                          value={auctionTime}
+                        />
+                      </div>
+                      <div className={Style.Form_box_input}>
+                        <label htmlFor="time">Giá khởi điểm </label>
+                        <input
+                          type="number"
+                          min="0"
+                          placeholder="Giá khởi điểm"
+                          className={Style.Form_box_input_userName}
+                          onChange={(e) => setAuctionStartPrice(e.target.value)}
+                          value={auctionStartPrice}
+                        />
+                      </div>
+                    </div>
+
+                    <div className={Style.nft_btn_box}>
+                      <Button
+                        btnName="Tạo Đấu giá"
+                        handleClick={() => handleCreateAuction()}
+                        classButton="buyButton"
+                      />
+                      <Button
+                        btnName="Quay lại"
+                        handleClick={() => setCreateAuction(false)}
+                        classButton="buyButton"
+                      />
+                    </div>
+                  </>
+                )}
+              </>
+            ) : (
               <>
                 <div className={Style.info_owner_wrapper}>
                   <div className={Style.info_owner_box}>
@@ -222,6 +632,8 @@ const MainInfo = ({ nftData, nftDataApiSub }) => {
                       <Image
                         src={creatorAvatar || images.avatar1}
                         alt="creator images"
+                        width={300}
+                        height={300}
                         className={Style.info_owner_avatar}
                       />
                       <div className={Style.info_owner_name}>
@@ -245,6 +657,8 @@ const MainInfo = ({ nftData, nftDataApiSub }) => {
                       <Image
                         src={ownerAvatar || images.avatar1}
                         alt="owner images"
+                        width={300}
+                        height={300}
                         className={Style.info_owner_avatar}
                       />
                       <div className={Style.info_owner_name}>
@@ -297,126 +711,17 @@ const MainInfo = ({ nftData, nftDataApiSub }) => {
                     <div>{"Giá thấp nhất: " + minPrice + " ETH"}</div>
                   </div>
                 </div>
-              </>
-            ) : (
-              <>
-                <div className={Style.AuctionForm}>
-                  <div className={Style.Form_box_input}>
-                    <label htmlFor="time">Thời gian đấu giá </label>
-                    <input
-                      type="number"
-                      min="0"
-                      step="1"
-                      placeholder="Thời gian đấu giá - Theo giây"
-                      className={Style.Form_box_input_userName}
-                      onChange={(e) => setAuctionTime(e.target.value)}
-                      value={auctionTime}
-                    />
-                  </div>
-                  <div className={Style.Form_box_input}>
-                    <label htmlFor="time">Giá khởi điểm </label>
-                    <input
-                      type="number"
-                      min="0"
-                      placeholder="Giá khởi điểm"
-                      className={Style.Form_box_input_userName}
-                      onChange={(e) => setAuctionStartPrice(e.target.value)}
-                      value={auctionStartPrice}
-                    />
-                  </div>
-                </div>
-              </>
-            )}
-
-            {address == nftData.seller ? (
-              <div className={Style.nft_btn_box}>
-                {!createAuction ? (
-                  <>
-                    <Button
-                      btnName="Đặt lại giá"
-                      handleClick={() => {
-                        router.push(
-                          "/resell?tokenId=" +
-                            nftData.tokenId +
-                            "&image=" +
-                            nftData.image +
-                            "&name=" +
-                            nftData.name +
-                            "&ex=1"
-                        );
-                      }}
-                      classButton="buyButton"
-                    />
-                    <Button
-                      btnName="Đấu giá"
-                      handleClick={() => setCreateAuction(true)}
-                      classButton="buyButton"
-                    />
-                  </>
-                ) : (
-                  <>
-                    <Button
-                      btnName="Tạo Đấu giá"
-                      handleClick={() => handleCreateAuction()}
-                      classButton="buyButton"
-                    />
-                    <Button
-                      btnName="Quay lại"
-                      handleClick={() => setCreateAuction(false)}
-                      classButton="buyButton"
-                    />
-                  </>
-                )}
-              </div>
-            ) : address == nftData.owner ? (
-              <div className={Style.nft_btn_box}>
                 <Button
-                  btnName="Bán"
-                  handleClick={() => {
-                    router.push(
-                      "/resell?tokenId=" +
-                        nftData.tokenId +
-                        "&image=" +
-                        nftData.image +
-                        "&name=" +
-                        nftData.name +
-                        "&ex=0"
-                    );
-                  }}
+                  btnName="Mua"
+                  handleClick={() => handleBuyNFT()}
                   classButton="buyButton"
                 />
-                {!createAuction ? (
-                  <Button
-                    btnName="Đấu giá"
-                    handleClick={() => createAuction()}
-                    classButton="buyButton"
-                  />
-                ) : (
-                  <>
-                    <Button
-                      btnName="Tạo Đấu giá"
-                      handleClick={() => handleCreateAuction()}
-                      classButton="buyButton"
-                    />
-                    <Button
-                      btnName="Quay lại"
-                      handleClick={() => setCreateAuction(false)}
-                      classButton="buyButton"
-                    />
-                  </>
-                )}
-              </div>
-            ) : (
-              <Button
-                btnName="Mua"
-                handleClick={() => buyNFT(nftData, address)}
-                classButton="buyButton"
-              />
+              </>
             )}
           </>
         ) : (
           <>
-            {!createAuction ? (
+            {address == nftData.seller || address == nftData.owner ? (
               <>
                 <div className={Style.info_owner_wrapper}>
                   <div className={Style.info_owner_box}>
@@ -429,6 +734,8 @@ const MainInfo = ({ nftData, nftDataApiSub }) => {
                       <Image
                         src={creatorAvatar || images.avatar1}
                         alt="creator images"
+                        width={300}
+                        height={300}
                         className={Style.info_owner_avatar}
                       />
                       <div className={Style.info_owner_name}>
@@ -452,6 +759,8 @@ const MainInfo = ({ nftData, nftDataApiSub }) => {
                       <Image
                         src={ownerAvatar || images.avatar1}
                         alt="owner images"
+                        width={300}
+                        height={300}
                         className={Style.info_owner_avatar}
                       />
                       <div className={Style.info_owner_name}>
@@ -490,89 +799,51 @@ const MainInfo = ({ nftData, nftDataApiSub }) => {
                     <div>Ethereum Chain</div>
                   </div>
                 </div>
-              </>
-            ) : (
-              <>
-                <div className={Style.info_owner_wrapper}>
-                  <div className={Style.info_owner_box}>
-                    <Link
-                      href={{
-                        pathname: "/author",
-                        query: { address: nftData.creator },
-                      }}
-                    >
-                      <Image
-                        src={creatorAvatar || images.avatar1}
-                        alt="creator images"
-                        className={Style.info_owner_avatar}
-                      />
-                      <div className={Style.info_owner_name}>
-                        <div style={{ fontWeight: "600" }}>Creator</div>
-
-                        <div>
-                          {nftData.creator?.slice(0, 8) +
-                            "..." +
-                            nftData.creator?.slice(-8)}
-                        </div>
-                      </div>
-                    </Link>
-                  </div>
-                  <div className={Style.info_owner_box}>
-                    <Link
-                      href={{
-                        pathname: "/author",
-                        query: { address: nftData.seller },
-                      }}
-                    >
-                      <Image
-                        src={ownerAvatar || images.avatar1}
-                        alt="owner images"
-                        className={Style.info_owner_avatar}
-                      />
-                      <div className={Style.info_owner_name}>
-                        <div style={{ fontWeight: "600" }}>Owner</div>
-                        <div>
-                          {nftData.seller?.slice(0, 8) +
-                            "..." +
-                            nftData.seller?.slice(-8)}
-                        </div>
-                      </div>
-                    </Link>
-                  </div>
-                </div>
-                <div style={{ fontWeight: "600" }}>
-                  {" "}
-                  {"Thời gian kết thúc:" + updateData.auction?.acutionEndTime}
-                </div>
-                <div style={{ fontWeight: "600" }}>
-                  {" "}
-                  {"Giá cao nhất:" + updateData.auction?.highestPayer}
-                </div>
-                <div>
-                  <input
-                    type="number"
-                    min="0"
-                    placeholder="Đặt giá"
-                    className={Style.Form_box_input_userName}
+                <div
+                  style={{
+                    fontWeight: "600",
+                    display: "flex",
+                    flexDirection: "row",
+                  }}
+                >
+                  Kết thúc sau:
+                  <CountdownTimer
+                    endTime={updateData.auction?.acutionEndTime}
                   />
                 </div>
-              </>
-            )}
+                <div style={{ fontWeight: "600" }}>
+                  {" "}
+                  {"Giá cao nhất: " + updateData.auction?.highestPrice + " ETH"}
+                </div>
 
-            {address == nftData.seller ? (
-              <Button
-                btnName="Kết thúc đấu giá"
-                handleClick={() => handleEndAuctin()}
-                classButton="buyButton"
-              />
-            ) : address == nftData.owner ? (
-              <Button
-                btnName="Kết thúc đấu giá"
-                handleClick={() => handleEndAuctin()}
-                classButton="buyButton"
-              />
+                <Button
+                  btnName="Kết thúc đấu giá"
+                  handleClick={() => handleEndAuctin()}
+                  classButton="buyButton"
+                />
+              </>
             ) : (
               <>
+                <div className={Style.AuctionForm}>
+                  <div
+                    style={{
+                      fontWeight: "600",
+                      display: "flex",
+                      flexDirection: "row",
+                    }}
+                  >
+                    Kết thúc sau:
+                    <CountdownTimer
+                      endTime={updateData.auction?.acutionEndTime}
+                    />
+                  </div>
+                  <div style={{ fontWeight: "600" }}>
+                    {" "}
+                    {"Giá cao nhất: " +
+                      updateData.auction?.highestPrice +
+                      " ETH"}
+                  </div>
+                </div>
                 <div className={Style.AuctionForm}>
                   <div className={Style.Form_box_input}>
                     <label htmlFor="time"> Đặt giá </label>

@@ -1,6 +1,7 @@
 import { Button, Footer, Header } from "@/components/componentsIndex";
 import React, { useContext, useState } from "react";
 import resellStyle from "../styles/resell.module.css";
+import Style from "../accountPage/Form/Form.module.css";
 import { useEffect } from "react";
 import { useRouter } from "next/router";
 import Image from "next/image";
@@ -8,6 +9,7 @@ import { LineChart } from "@/detailPage/componentIndex";
 import { Oasis_NFTMarketplaceContext } from "@/Context/Oasis_NFTMarketplaceContext";
 import { Oasis_APIContext } from "@/Context/Oasis_APIContext";
 import GuestError from "@/components/GuestError/GuestError";
+import { useAddress } from "@thirdweb-dev/react";
 
 const resell = () => {
   const { createSale, createReSetPrice } = useContext(
@@ -33,23 +35,29 @@ const resell = () => {
   });
 
   useEffect(() => {
-    if (!router.isReady) {
-      return;
-    }
-    console.log(router.query);
-    setNftData(router.query);
-
-    api_getOneNFT(router.query.tokenId).then((item) => {
-      if (item) {
-        console.log(item.history);
-        setNftDataApiSub({
-          history: item.history,
-          contractAddress: item.contractAddress,
-          tradingTimes: item.tradingTimes,
-          like: item.like,
-        });
+    let isMounted = true;
+    if (isMounted) {
+      if (!router.isReady) {
+        return;
       }
-    });
+      console.log(router.query);
+      setNftData(router.query);
+
+      api_getOneNFT(router.query.tokenId).then((item) => {
+        if (item) {
+          console.log(item.history);
+          setNftDataApiSub({
+            history: item.history,
+            contractAddress: item.contractAddress,
+            tradingTimes: item.tradingTimes,
+            like: item.like,
+          });
+        }
+      });
+    }
+    return () => {
+      isMounted = false;
+    };
   }, [router.isReady]);
 
   const resellNFT = async (tokenURI, price, check, id) => {

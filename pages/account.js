@@ -18,14 +18,21 @@ const account = () => {
   const [account, setAccount] = useState({ avatar: images.avatar1 });
 
   useEffect(() => {
-    setOpenAlert(address);
-    api_getOneAccount(address).then((item) => {
-      console.log(item);
-      if (item) {
+    let isMounted = true;
+    if (isMounted) {
+      setOpenAlert(address);
+      api_getOneAccount(address).then((item) => {
         console.log(item);
-        setAccount(item);
-      }
-    });
+        if (item) {
+          console.log(item);
+          setAccount(item);
+        }
+      });
+    }
+
+    return () => {
+      isMounted = false;
+    };
   }, [address]);
 
   // useEffect(() => {
@@ -39,8 +46,15 @@ const account = () => {
   // }, []);
 
   useEffect(() => {
-    console.log(account);
-    setFileUrl(account?.avatar);
+    let isMounted = true;
+    if (isMounted) {
+      console.log(account);
+      setFileUrl(account?.avatar);
+    }
+
+    return () => {
+      isMounted = false;
+    };
   }, [account]);
 
   const onDrop = useCallback(async (acceptedFile) => {
@@ -62,39 +76,30 @@ const account = () => {
     <div style={{ backgroundColor: "rgb(250, 249, 246)" }}>
       <Header />
       {address ? (
-        <>
-          {openAlert ? (
-            <div className={Style.account}>
-              <div className={Style.account_info}>
-                <h1>Thông tin tài khoản</h1>
-              </div>
+        <div className={Style.account}>
+          <div className={Style.account_info}>
+            <h1>Thông tin tài khoản</h1>
+          </div>
 
-              <div className={Style.account_box}>
-                <div className={Style.account_box_img} {...getRootProps()}>
-                  <input {...getInputProps()} />
-                  <Image
-                    src={fileUrl || images.avatar1}
-                    alt="account upload"
-                    width={150}
-                    height={150}
-                    className={Style.account_box_img_img}
-                  />
-                  <p className={Style.account_box_img_para}>
-                    Thay đổi ảnh đại diện
-                  </p>
-                </div>
-                <div className={Style.account_box_from}>
-                  <Form fileUrl={fileUrl} accountData={account} />
-                </div>
-              </div>
+          <div className={Style.account_box}>
+            <div className={Style.account_box_img} {...getRootProps()}>
+              <input {...getInputProps()} />
+              <Image
+                src={fileUrl || images.avatar1}
+                alt="account upload"
+                width={150}
+                height={150}
+                className={Style.account_box_img_img}
+              />
+              <p className={Style.account_box_img_para}>
+                Thay đổi ảnh đại diện
+              </p>
             </div>
-          ) : (
-            <AlertComponent
-              setOpenAlert={setOpenAlert}
-              alertMessage={message}
-            />
-          )}
-        </>
+            <div className={Style.account_box_from}>
+              <Form fileUrl={fileUrl} accountData={account} />
+            </div>
+          </div>
+        </div>
       ) : (
         <GuestError />
       )}

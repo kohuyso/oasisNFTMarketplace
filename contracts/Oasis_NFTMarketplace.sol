@@ -59,6 +59,9 @@ contract Oasis_NFTMarketplace is ERC721URIStorage {
             idToMarketItem[tokenId].auction.ended == true,
             "The NFT is bidding"
         );
+        require(
+            msg.value == listingPrice
+        );
         if ((idToMarketItem[tokenId].seller == msg.sender && idToMarketItem[tokenId].sold == false) || ( idToMarketItem[tokenId].owner == msg.sender && idToMarketItem[tokenId].sold == true)) {
             _auctionIds.increment();
             idToMarketItem[tokenId].auction = AuctionSession(
@@ -142,7 +145,7 @@ contract Oasis_NFTMarketplace is ERC721URIStorage {
             idToMarketItem[_tokenId].owner = payable(idToMarketItem[_tokenId].auction.highestPayer);
             idToMarketItem[_tokenId].sold = true;
             idToMarketItem[_tokenId].seller = payable(address(0));
-
+            idToMarketItem[_tokenId].price = idToMarketItem[_tokenId].auction.highestPrice;
 
             _transfer(address(this), payable(idToMarketItem[_tokenId].auction.highestPayer), _tokenId);
             payable(owner).transfer(listingPrice);
@@ -243,6 +246,8 @@ contract Oasis_NFTMarketplace is ERC721URIStorage {
         _itemsSold.decrement();
 
         _transfer(msg.sender, address(this), tokenId);
+        payable(owner).transfer(listingPrice);
+
     }
 
 
@@ -263,11 +268,11 @@ contract Oasis_NFTMarketplace is ERC721URIStorage {
 
     function fetchMarketItem() public view returns (MarketItem[] memory) {
         uint256 itemCount = _tokenIds.current();
-        uint256 unsoldItemCount = _tokenIds.current() - _itemsSold.current();
+        uint256 unsoldItemCount = itemCount - _itemsSold.current();
         uint256 currentIndex = 0;
 
         MarketItem[] memory items = new MarketItem[](unsoldItemCount);
-        for (uint256 i = 0; i < itemCount; i++) {
+        for (uint256 i = 0; i < itemCount; i+=1) {
             if (idToMarketItem[i + 1].owner == address(this)) {
                 uint256 currentId = i + 1;
                 MarketItem storage currentItem = idToMarketItem[currentId];
@@ -278,19 +283,43 @@ contract Oasis_NFTMarketplace is ERC721URIStorage {
         return items;
     }
 
+    function fetchMarketItemPage(uint256 _pageNumber, uint256 _numberItem) public view returns (MarketItem[] memory) {
+        require(_tokenIds.current() - _itemsSold.current() > _pageNumber*_numberItem);
+      
+        uint256 currentIndex = 0;
+        uint256 count = 0;
+        uint256 limit = _numberItem*_pageNumber;
+        MarketItem[] memory items = new MarketItem[](_numberItem);
+        for (uint256 i = _tokenIds.current(); i > 0; i-=1) {
+            if (idToMarketItem[i].owner == address(this)) {
+                if (count >= limit) {
+                    uint256 currentId = i;
+                    MarketItem storage currentItem = idToMarketItem[currentId];
+                    items[currentIndex] = currentItem;
+                    currentIndex += 1;
+                }
+                count += 1;
+                if (currentIndex == _numberItem) {
+                    break;
+                }
+            }
+        }
+        return items;
+    }
+
     function fetchMyNFT() public view returns (MarketItem[] memory) {
         uint256 totalItemCount = _tokenIds.current();
         uint256 itemCount = 0;
         uint256 currentIndex = 0;
 
-        for (uint256 i = 0; i < totalItemCount; i++) {
+        for (uint256 i = 0; i < totalItemCount; i+=1) {
             if (idToMarketItem[i + 1].owner == msg.sender) {
                 itemCount += 1;
             }
         }
 
         MarketItem[] memory items = new MarketItem[](itemCount);
-        for (uint256 i = 0; i < totalItemCount; i++) {
+        for (uint256 i = 0; i < totalItemCount; i+=1) {
             if (idToMarketItem[i + 1].owner == msg.sender) {
                 uint256 currentId = i + 1;
                 MarketItem storage currentItem = idToMarketItem[currentId];
@@ -306,14 +335,14 @@ contract Oasis_NFTMarketplace is ERC721URIStorage {
         uint256 itemCount = 0;
         uint256 currentIndex = 0;
 
-        for (uint256 i = 0; i < totalItemCount; i++) {
+        for (uint256 i = 0; i < totalItemCount; i+=1) {
             if (idToMarketItem[i + 1].seller == msg.sender) {
                 itemCount += 1;
             }
         }
 
         MarketItem[] memory items = new MarketItem[](itemCount);
-        for (uint256 i = 0; i < totalItemCount; i++) {
+        for (uint256 i = 0; i < totalItemCount; i+=1) {
             if (idToMarketItem[i + 1].seller == msg.sender) {
                 uint256 currentId = i + 1;
                 MarketItem storage currentItem = idToMarketItem[currentId];

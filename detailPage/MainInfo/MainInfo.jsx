@@ -34,6 +34,7 @@ const MainInfo = ({ nftData, nftDataApiSub }) => {
   const [maxPrice, setMaxPrice] = useState(null);
   const [creatorAvatar, setCreatorAvatar] = useState(images.avatar2);
   const [ownerAvatar, setOwnerAvatar] = useState(images.avatar2);
+
   const [createAuction, setCreateAuction] = useState(false);
   const [auction, setAuction] = useState(false);
   const [auctionStartPrice, setAuctionStartPrice] = useState(0);
@@ -47,35 +48,52 @@ const MainInfo = ({ nftData, nftDataApiSub }) => {
   const [ethUSDPrice, setEthUSDPrice] = useState(1733);
   console.log(nftData);
   useEffect(() => {
-    try {
-      axios
-        .get(" https://min-api.cryptocompare.com/data/price?fsym=ETH&tsyms=USD")
-        .then((response) => {
-          console.log(response);
-          setEthUSDPrice(response.data.USD);
-        });
-    } catch (error) {
-      console.log(error);
+    let isMounted = true;
+    if (isMounted) {
+      try {
+        axios
+          .get(
+            " https://min-api.cryptocompare.com/data/price?fsym=ETH&tsyms=USD"
+          )
+          .then((response) => {
+            console.log(response);
+            setEthUSDPrice(response.data.USD);
+          });
+      } catch (error) {
+        console.log(error);
+      }
+
+      // UP();
+
+      console.log("Log set auction 1");
+      if (updateData.auction?.ended == false) {
+        setAuction(true);
+      } else {
+        setAuction(false);
+      }
     }
 
-    // getSingleNFT(nftData.tokenId).then((item) => {
-    //   if (item) {
-    //     setUpdateData(item);
-    //   }
-    // });
-    UP();
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   useEffect(() => {
-    getSingleNFT(nftData.tokenId).then((item) => {
-      console.log(item);
-      console.log(item);
-      if (item) {
+    let isMounted = true;
+    if (isMounted) {
+      getSingleNFT(nftData.tokenId).then((item) => {
         console.log(item);
-        setUpdateData(item);
-      }
-    });
-    UP();
+        if (item) {
+          console.log(item);
+          setUpdateData(item);
+        }
+      });
+      // UP();
+    }
+
+    return () => {
+      isMounted = false;
+    };
   }, [nftData]);
 
   const UP = () => {
@@ -99,10 +117,10 @@ const MainInfo = ({ nftData, nftDataApiSub }) => {
         }
       });
 
-      api_getOneAccount(nftDataApiSub.creator).then((item) => {
+      api_getOneAccount(nftData.creator).then((item) => {
         setCreatorAvatar(item?.avatar);
       });
-      api_getOneAccount(nftData.owner).then((item) => {
+      api_getOneAccount(updateData.seller).then((item) => {
         setOwnerAvatar(item?.avatar);
       });
     } catch (error) {
@@ -110,57 +128,71 @@ const MainInfo = ({ nftData, nftDataApiSub }) => {
     }
   };
   useEffect(() => {
-    UP();
-  }, [updateData]);
-  useEffect(() => {
-    UP();
-  }, [address]);
+    let isMounted = true;
+    if (isMounted) {
+      UP();
+    }
+
+    return () => {
+      isMounted = false;
+    };
+  }, [updateData, address]);
 
   useEffect(() => {
-    console.log(nftDataApiSub);
-    nftDataApiSub.history.forEach((el, index) => {
-      if (index == 0) {
-        setMinPrice(el.price);
-      }
-      if (el.price > maxPrice) {
-        setMaxPrice(el.price);
-      }
-      if (el.price < minPrice) {
-        setMinPrice(el.price);
-      }
-    });
-    setLikeNumber(nftDataApiSub.like);
+    let isMounted = true;
+    if (isMounted) {
+      console.log(nftDataApiSub);
+      let tempMax = 0;
+      let tempMin = 0;
+      nftDataApiSub.history.forEach((el, index) => {
+        if (index == 0) {
+          tempMin = el.price;
+        }
+        if (el.price > tempMax) {
+          tempMax = el.price;
+        }
+        if (el.price < tempMin) {
+          tempMin = el.price;
+        }
+      });
+      setMaxPrice(tempMax);
+      setMinPrice(tempMin);
+      setLikeNumber(nftDataApiSub.like);
+    }
+    return () => {
+      isMounted = false;
+    };
   }, [nftDataApiSub]);
 
   useEffect(() => {
-    console.log("Log set auction" + auction);
-    if (updateData.auction?.ended == false) {
-      setAuction(true);
-    } else {
-      setAuction(false);
+    let isMounted = true;
+    if (isMounted) {
+      console.log("Log set auction" + auction);
+      if (updateData.auction?.ended == false) {
+        setAuction(true);
+      } else {
+        setAuction(false);
+      }
     }
+    return () => {
+      isMounted = false;
+    };
   }, [updateData]);
-  useEffect(() => {
-    console.log("Log set auction 1");
-    if (updateData.auction?.ended == false) {
-      setAuction(true);
-    } else {
-      setAuction(false);
-    }
-  }, []);
 
   console.log(nftData);
   console.log(updateData);
 
   const likeNFT = () => {
-    if (like == false) {
-      api_likeNFT(nftData.tokenId, address, 1);
-      setLike(true);
-      setLikeNumber(likeNumber + 1);
-    } else {
-      api_likeNFT(nftData.tokenId, address, -1);
-      setLike(false);
-      setLikeNumber(likeNumber - 1);
+    if (address) {
+      if (like == false) {
+        api_likeNFT(nftData.tokenId, address, 1);
+        setLike(true);
+        setLikeNumber(likeNumber + 1);
+      } else {
+        api_likeNFT(nftData.tokenId, address, -1);
+        setLike(false);
+        setLikeNumber(likeNumber - 1);
+      }
     }
     // api_likeNFT();
     // setLike(!like);
@@ -174,62 +206,82 @@ const MainInfo = ({ nftData, nftDataApiSub }) => {
     console.log("handleCreateAuction1");
     console.log(nftData);
 
-    getSingleNFT(nftData.tokenId).then((item) => {
-      if (item) {
-        console.log(item);
-        setUpdateData(item);
-      }
-    });
-    console.log("handleCreateAuction2");
-    setAuction(true);
-    router.push("/search");
+    // getSingleNFT(nftData.tokenId).then((item) => {
+    //   if (item) {
+    //     console.log(item);
+    //     setUpdateData(item);
+    //   }
+    // });
+    // console.log("handleCreateAuction2");
+    // setAuction(true);
+    // setTimeout(() => {
+    //   router.push("/search");
+    // }, 5000);
   };
 
   const handleCreateBidding = async () => {
-    await createBidAuction(nftData.tokenId, auctionBidding);
+    await createBidAuction(
+      nftData.tokenId,
+      auctionBidding,
+      updateData.auction?.AuctionId
+    );
     // const checkUpdateWithdraw = await createBidAuction(
     //   nftData.tokenId,
     //   auctionBidding
     // );
-    console.log("handleCreateBidding");
-    await getSingleNFT(nftData.tokenId).then((item) => {
-      if (item) {
-        console.log(item);
-        setUpdateData(item);
-      }
-    });
+    setTimeout(async () => {
+      console.log("handleCreateBidding");
+      await getSingleNFT(nftData.tokenId).then((item) => {
+        if (item) {
+          console.log(item);
+          setUpdateData(item);
+        }
+      });
+    }, 9500);
 
-    api_updateAccountAddAuctionID(
-      updateData.tokenId,
-      updateData.auction?.AuctionId,
-      address,
-      auctionBidding
-    );
+    // api_updateAccountAddAuctionID(
+    //   updateData.tokenId,
+    //   updateData.auction?.AuctionId,
+    //   address,
+    //   auctionBidding
+    // );
   };
 
   const handleEndAuctin = async () => {
-    await auctionEnded(nftData.tokenId);
-    await api_updateNFTResell(
+    await auctionEnded(
       nftData.tokenId,
       updateData.auction?.highestPrice,
-      true
-    );
-    api_updateAccountAddAuctionID(
-      updateData.tokenId,
       updateData.auction?.AuctionId,
-      updateData.auction?.highestPayer,
-      updateData.auction?.highestPrice * -1
+      updateData.auction?.highestPayer
     );
+    // await api_updateNFTResell(
+    //   nftData.tokenId,
+    //   updateData.auction?.highestPrice,
+    //   true
+    // );
+    // api_updateAccountAddAuctionID(
+    //   updateData.tokenId,
+    //   updateData.auction?.AuctionId,
+    //   updateData.auction?.highestPayer,
+    //   updateData.auction?.highestPrice * -1
+    // );
     console.log("handleEndAuctin");
-    await getSingleNFT(nftData.tokenId).then((item) => {
-      if (item) {
-        console.log(item);
-        setUpdateData(item);
-      }
-    });
-    setAuction(false);
-    UP();
-    router.push("/author?address=" + updateData.auction?.highestPayer);
+    // await getSingleNFT(nftData.tokenId).then((item) => {
+    //   if (item) {
+    //     console.log(item);
+    //     setUpdateData(item);
+    //   }
+    // });
+    // setAuction(false);
+    // UP();
+
+    // setTimeout(() => {
+    //   router.push("/author?address=" + updateData.auction?.highestPayer);
+    // }, 9000);
+  };
+
+  const handleBuyNFT = () => {
+    buyNFT(nftData, address);
   };
 
   return (
@@ -239,7 +291,7 @@ const MainInfo = ({ nftData, nftDataApiSub }) => {
       </div>
 
       <Image
-        src={nftData.image}
+        src={nftData.image || images.NFT1}
         width={1200}
         height={1200}
         alt="NFT images"
@@ -289,7 +341,7 @@ const MainInfo = ({ nftData, nftDataApiSub }) => {
                           }}
                         >
                           <Image
-                            src={creatorAvatar || images.avatar1}
+                            src={ownerAvatar || images.avatar1}
                             alt="owner images"
                             width={300}
                             height={300}
@@ -450,7 +502,7 @@ const MainInfo = ({ nftData, nftDataApiSub }) => {
                           }}
                         >
                           <Image
-                            src={creatorAvatar || images.avatar1}
+                            src={ownerAvatar || images.avatar1}
                             alt="owner images"
                             width={300}
                             height={300}
@@ -609,7 +661,7 @@ const MainInfo = ({ nftData, nftDataApiSub }) => {
                       }}
                     >
                       <Image
-                        src={creatorAvatar || images.avatar1}
+                        src={ownerAvatar || images.avatar1}
                         alt="owner images"
                         width={300}
                         height={300}
@@ -667,7 +719,7 @@ const MainInfo = ({ nftData, nftDataApiSub }) => {
                 </div>
                 <Button
                   btnName="Mua"
-                  handleClick={() => buyNFT(nftData, address)}
+                  handleClick={() => handleBuyNFT()}
                   classButton="buyButton"
                 />
               </>
@@ -711,7 +763,7 @@ const MainInfo = ({ nftData, nftDataApiSub }) => {
                       }}
                     >
                       <Image
-                        src={creatorAvatar || images.avatar1}
+                        src={ownerAvatar || images.avatar1}
                         alt="owner images"
                         width={300}
                         height={300}

@@ -28,55 +28,32 @@ const detail = () => {
   const router = useRouter();
 
   useEffect(() => {
-    if (!router.isReady) {
-      return;
+    let isMounted = true;
+    if (isMounted) {
+      if (!router.isReady) {
+        return;
+      }
+      console.log(router.query);
+      setNftData(router.query);
+
+      api_getOneNFT(router.query.tokenId).then((item) => {
+        if (item) {
+          console.log(item.history);
+          setNftDataApiSub({
+            history: item.history,
+            contractAddress: item.contractAddress,
+            tradingTimes: item.tradingTimes,
+            like: item.like,
+            creator: item.name,
+          });
+        }
+      });
     }
-    console.log(router.query);
-    setNftData(router.query);
 
-    api_getOneNFT(router.query.tokenId).then((item) => {
-      if (item) {
-        console.log(item.history);
-        setNftDataApiSub({
-          history: item.history,
-          contractAddress: item.contractAddress,
-          tradingTimes: item.tradingTimes,
-          like: item.like,
-          creator: item.name,
-        });
-      }
-    });
+    return () => {
+      isMounted = false;
+    };
   }, [router.isReady]);
-
-  const { fetchNFTs } = useContext(Oasis_NFTMarketplaceContext);
-  const [nft, setNft] = useState([]);
-  useEffect(() => {
-    fetchNFTs().then((item) => {
-      if (item) {
-        setNft(item.reverse());
-      }
-    });
-
-    // setNftDataApiSub(
-    //   api_getOneNFT(router.query.tokenId).then((item) => {
-    //     if (item) {
-    //       setNftDataApiSub({
-    //         history: item.history,
-    //         contractAddress: item.contractAddress,
-    //         tradingTimes: item.tradingTimes,
-    //       });
-    //     }
-    //   })
-    // );
-    // const item = api_getOneNFT(router.query.tokenId);
-    // setNftDataApiSub(
-    //   setNftDataApiSub({
-    //     history: item.history,
-    //     contractAddress: item.contractAddress,
-    //     tradingTimes: item.tradingTimes,
-    //   })
-    // );
-  }, []);
 
   return (
     <div
@@ -89,7 +66,6 @@ const detail = () => {
       <Header />
       <MainInfo nftData={nftData} nftDataApiSub={nftDataApiSub} />
       <SubInfo nftData={nftData} nftDataApiSub={nftDataApiSub} />
-      <MiniNFT title={"NFT nổi bật"} data={nft} />
       <Footer />
     </div>
   );

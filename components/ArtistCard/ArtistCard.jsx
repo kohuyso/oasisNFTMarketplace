@@ -8,21 +8,23 @@ const ArtistCard = ({ accounts }) => {
   const [arrayArtist, setArrayArtist] = useState([]);
 
   useEffect(() => {
-    console.log(accounts);
-    setArrayArtist(accounts);
+    if (accounts?.length != 0) {
+      console.log(accounts);
+      setArrayArtist(accounts);
+    }
   }, [accounts]);
 
   return (
     <div className={Style.ArtistCard_wrapper}>
       <div className={Style.ArtistCard_title}>Tác giả nổi bật</div>
       <div className={Style.ArtistCard_list}>
-        {arrayArtist.map((el, i) => (
+        {arrayArtist?.map((el, i) => (
           <Link
             href={{
               pathname: "/author",
               query: { address: el._id },
             }}
-            key={el}
+            key={el._id}
           >
             <div className={Style.ArtistCard_box}>
               <Image

@@ -22,7 +22,7 @@ const Home = () => {
   useEffect(() => {
     let isMounted = true;
     if (isMounted) {
-      fetchNFTsByPage(0).then((item) => {
+      fetchNFTs().then((item) => {
         if (item) {
           setAllNft(item);
         }

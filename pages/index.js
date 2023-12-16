@@ -24,7 +24,7 @@ const Home = () => {
     if (isMounted) {
       fetchNFTs().then((item) => {
         if (item) {
-          setAllNft(item);
+          setAllNft(item.reverse());
         }
       });
     }

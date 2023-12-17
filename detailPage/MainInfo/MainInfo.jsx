@@ -248,12 +248,16 @@ const MainInfo = ({ nftData, nftDataApiSub }) => {
   };
 
   const handleEndAuctin = async () => {
-    await auctionEnded(
-      nftData.tokenId,
-      updateData.auction?.highestPrice,
-      updateData.auction?.AuctionId,
-      updateData.auction?.highestPayer
-    );
+    await getSingleNFT(nftData.tokenId).then((item) => {
+      if (item) {
+        auctionEnded(
+          nftData.tokenId,
+          item.auction?.highestPrice,
+          item.auction?.AuctionId,
+          item.auction?.highestPayer
+        );
+      }
+    });
     // await api_updateNFTResell(
     //   nftData.tokenId,
     //   updateData.auction?.highestPrice,

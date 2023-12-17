@@ -23,6 +23,15 @@ const MintNFT = ({ uploadToIPFS, createNFT }) => {
   const [price, setPrice] = useState(0);
   const [image, setImage] = useState(null);
 
+  const setNameLimit = (value) => {
+    if (value.target.value.toString().length > 25) {
+      console.log("exit");
+      return;
+    }
+    console.log(value.target.value);
+    setName(value.target.value);
+  };
+
   const categoryArry = [
     {
       image: images.kindArt,
@@ -66,8 +75,16 @@ const MintNFT = ({ uploadToIPFS, createNFT }) => {
             type="text"
             placeholder="Tên NFT"
             className={formStyle.Form_box_input_userName}
-            onChange={(e) => setName(e.target.value)}
+            onChange={(e) => setNameLimit(e)}
+            value={name}
           />
+          {name.length < 25 ? (
+            <></>
+          ) : (
+            <div style={{ fontSize: "10px", marginLeft: "10px", color: "red" }}>
+              Tên NFT chỉ ngắn hơn 25 ký tự
+            </div>
+          )}
         </div>
 
         <div className={formStyle.Form_box_input}>

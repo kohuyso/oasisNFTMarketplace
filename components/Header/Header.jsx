@@ -94,7 +94,6 @@ const Header = () => {
           <div className={Style.searchSection}>
             <div>
               <span>
-                );
                 <Search
                   onClick={() => {
                     router.push("/search?search=" + searchItem);

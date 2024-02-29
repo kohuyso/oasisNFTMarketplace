@@ -69,7 +69,7 @@
   background-color: var(--icons-color);
 }
 
-@media (min-width: 426px) and (max-width: 768px) {
+@media (min-width: 425px) and (max-width: 768px) {
   .MintNFT_box_slider_div {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -78,7 +78,7 @@
     width: 25vw;
   }
 }
-@media (max-width: 425.9px) {
+@media (max-width: 425.1px) {
   .MintNFT_box_slider_div {
     display: grid;
     grid-template-columns: repeat(2, 1fr);

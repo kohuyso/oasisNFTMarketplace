@@ -7,17 +7,19 @@ import {
 } from "@/components/componentsIndex";
 
 import { Oasis_NFTMarketplaceContext } from "@/Context/Oasis_NFTMarketplaceContext";
-import { Oasis_APIContext } from "@/Context/Oasis_APIContext";
+// import { Oasis_APIContext } from "@/Context/Oasis_APIContext";
 import ArtistCardForHome from "@/components/ArtistCardForHome/ArtistCardForHome";
 import MiniNFTForHome from "@/components/MiniNFT/MiniNFTForHome";
+import AlertComponent from "@/components/AlertComponent/AlertComponent";
 const Home = () => {
   const { fetchNFTs, fetchNFTsByPage } = useContext(
     Oasis_NFTMarketplaceContext
   );
-  const { api_getTopNFT } = useContext(Oasis_APIContext);
+  // const { api_getTopNFT } = useContext(Oasis_APIContext);
 
   const [allNft, setAllNft] = useState([]);
-  const [topNFT, setTopNFT] = useState([]);
+  const [alert, setAlert] = useState(true);
+  // const [topNFT, setTopNFT] = useState([]);
 
   useEffect(() => {
     let isMounted = true;
@@ -33,39 +35,39 @@ const Home = () => {
     };
   }, []);
 
-  useEffect(() => {
-    let isMounted = true;
-    if (isMounted && allNft.length != 0) {
-      console.log("AAAAAAAAAA");
-      api_getTopNFT().then((item) => {
-        if (item) {
-          console.log(item);
-          setTopNFT(
-            allNft.filter((el) => {
-              console.log(el);
-              for (let index = 0; index < item.length; index++) {
-                if (el.tokenId == item[index]._id) {
-                  console.log(el);
-                  return el;
-                }
-              }
-            })
-          );
-        }
-      });
-    }
-    return () => {
-      isMounted = false;
-    };
-  }, [allNft]);
-  console.log(topNFT);
+  // useEffect(() => {
+  //   let isMounted = true;
+  //   if (isMounted && allNft.length != 0) {
+  //     console.log("AAAAAAAAAA");
+  //     api_getTopNFT().then((item) => {
+  //       if (item) {
+  //         console.log(item);
+  //         setTopNFT(
+  //           allNft.filter((el) => {
+  //             console.log(el);
+  //             for (let index = 0; index < item.length; index++) {
+  //               if (el.tokenId == item[index]._id) {
+  //                 console.log(el);
+  //                 return el;
+  //               }
+  //             }
+  //           })
+  //         );
+  //       }
+  //     });
+  //   }
+  //   return () => {
+  //     isMounted = false;
+  //   };
+  // }, [allNft]);
+  // console.log(topNFT);
   console.log(allNft);
 
   return (
     <div>
       <NavBar />
       <div style={{ marginTop: "3rem" }}>
-        <MiniNFTForHome title={"NFT nổi bật"} data={topNFT} />
+        <MiniNFTForHome title={"NFT nổi bật"} data={allNft.slice(0, 8)} />
       </div>
       <div style={{ marginTop: "3rem" }}>
         <CategoryCard allNft={allNft} />
@@ -74,6 +76,10 @@ const Home = () => {
         <ArtistCardForHome />
       </div>
       <Footer />
+     {alert && (         <AlertComponent
+          setOpenAlert={setAlert}
+          alertMessage={{message: "Do backend chưa được hosting nên một số chức năng sẽ hiển thị chưa đầy đủ", type: 0}}
+        />)}
     </div>
   );
 };

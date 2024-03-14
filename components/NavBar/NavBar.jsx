@@ -13,7 +13,6 @@ import images from "../../images";
 import NavBarMobile from "./NavBarMobile/NavBarMobile";
 import { useRouter } from "next/router";
 import { Oasis_APIContext } from "@/Context/Oasis_APIContext";
-import { color } from "web3uikit";
 
 const NavBar = () => {
   const router = useRouter();
@@ -86,13 +85,7 @@ const NavBar = () => {
               className={Style.logoImage}
             />
 
-            <div
-              style={{
-                fontWeight: "800",
-                marginLeft: "1rem",
-                fontSize: "16px",
-              }}
-            >
+            <div className={Style.logoText} >
               OASIS
             </div>
           </div>
